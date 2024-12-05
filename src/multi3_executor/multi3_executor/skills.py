@@ -28,7 +28,7 @@ class Navigator():
         # goal_pose.pose.pose.orientation.w = spot['orientation']['w']
 
         self._action_client.wait_for_server()
-        self._send_goal_future = self._action_client.send_goal_async(goal_pose,feedback_callback=self.node.feedback_callback)
+        self._send_goal_future = self._action_client.send_goal_async(goal_pose,feedback_callback=self.feedback_callback)
         self._send_goal_future.add_done_callback(self.goal_response_callback)
     
     def goal_response_callback(self, future):
