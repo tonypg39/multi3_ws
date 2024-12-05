@@ -1,0 +1,40 @@
+[
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "mop",
+                "vars": {
+                    "door": {
+                        "x": -4.0,
+                        "y": -0.4
+                    },
+                    "size": 1
+                }
+            },
+            {
+                "id": "send_signal|mop",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "mop",
+        "tasks": [
+            {
+                "id": "vacuum",
+                "vars": {
+                    "door": {
+                        "x": 10.0,
+                        "y": 10.0
+                    },
+                    "size": 2
+                }
+            },
+            {
+                "id": "send_signal|vacuum",
+                "vars": {}
+            }
+        ]
+    }
+]
