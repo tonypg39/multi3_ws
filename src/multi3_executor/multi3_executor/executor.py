@@ -1,5 +1,7 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.executors import MultiThreadedExecutor
+from rclpy.callback_groups import ReentrantCallbackGroup
 from std_msgs.msg import String
 from .skills import SkillManager
 from threading import Event
@@ -13,7 +15,7 @@ class FragmentExecutor(Node):
         self.robot_name = "robot1"
         self.declare_parameter("skill_list", "-")
         self.declare_parameter("name", "robot")
-        
+        self.callback_group = ReentrantCallbackGroup()
         self.skill_list = self.get_parameter("skill_list").value
         self.robot_name = self.get_parameter("name").value
         self.get_logger().info(f"Starting an exec node [{self.robot_name}] with skills: " + self.skill_list)
@@ -44,7 +46,7 @@ class FragmentExecutor(Node):
         # self.create_service()
         # print("h1")
         self.get_logger().info("Advertising the service...")
-        self.srv = self.create_service(Fragment, f'/{self.robot_name}/get_fragment', self.exec)
+        self.srv = self.create_service(Fragment, f'/{self.robot_name}/get_fragment', self.exec, callback_group=self.callback_group)
 
     
     def _stop_srv(self):
@@ -81,9 +83,12 @@ class FragmentExecutor(Node):
 def main(args=None):
     rclpy.init(args=args)
     bot_exec = FragmentExecutor()
-    rclpy.spin(bot_exec)
+    mt_executor = MultiThreadedExecutor()
+    mt_executor.add_node(bot_exec)
+    mt_executor.spin()
+    # rclpy.spin(bot_exec)
     bot_exec.destroy_node()
-    bot_exec.shutdown()
+    rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
