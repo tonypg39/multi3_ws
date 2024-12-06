@@ -64,9 +64,14 @@ class FragmentExecutor(Node):
         frag = json.loads(request.fragment)
         for t in frag["tasks"]:
             sep = t["id"].find("|")
+            mi_sep = t["id"].find("^")
+
             if sep > -1: # if it a wait or send, augment the call with the target task(s)
                 t["vars"]["target"] = t["id"][sep+1:]
                 t["id"] = t["id"][:sep]
+            
+            elif mi_sep > -1:
+                t["id"] = t["id"][:mi_sep]
             
             wait_for_skill = Event()
             sk = self.sk_map[t["id"]](self, t["vars"],wait_for_skill)

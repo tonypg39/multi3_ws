@@ -3,36 +3,100 @@
         "initial_wait": "SYSTEM_START",
         "tasks": [
             {
-                "id": "mop",
+                "id": "vacuum^0",
                 "vars": {
-                    "door": {
-                        "x": -4.0,
-                        "y": -0.4
-                    },
-                    "size": 1
+                    "role": "A",
+                    "x": 2,
+                    "y": 1
                 }
             },
             {
-                "id": "send_signal|mop",
+                "id": "send_signal|vacuum^0",
                 "vars": {}
             }
         ]
     },
     {
-        "initial_wait": "mop",
+        "initial_wait": "vacuum^0",
         "tasks": [
             {
-                "id": "vacuum",
+                "id": "mop^0",
                 "vars": {
-                    "door": {
-                        "x": 10.0,
-                        "y": 10.0
-                    },
-                    "size": 2
+                    "role": "B",
+                    "x": 22,
+                    "y": 22
                 }
             },
             {
-                "id": "send_signal|vacuum",
+                "id": "send_signal|mop^0",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^1",
+                "vars": {
+                    "role": "A",
+                    "x": 3,
+                    "y": 5
+                }
+            },
+            {
+                "id": "send_signal|vacuum^1",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "vacuum^1",
+        "tasks": [
+            {
+                "id": "mop^1",
+                "vars": {
+                    "role": "B",
+                    "x": 33,
+                    "y": 33
+                }
+            },
+            {
+                "id": "send_signal|mop^1",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^2",
+                "vars": {
+                    "role": "A",
+                    "x": 3,
+                    "y": 7
+                }
+            },
+            {
+                "id": "send_signal|vacuum^2",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "vacuum^2",
+        "tasks": [
+            {
+                "id": "mop^2",
+                "vars": {
+                    "role": "B",
+                    "x": 44,
+                    "y": 44
+                }
+            },
+            {
+                "id": "send_signal|mop^2",
                 "vars": {}
             }
         ]
