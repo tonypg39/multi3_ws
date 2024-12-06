@@ -28,7 +28,7 @@ class Navigator():
         # Set up the goal pose
         goal_pose = NavigateToPose.Goal()
         goal_pose.pose.header.frame_id = 'map'
-        self.node.get_logger().info(f'Sending to Nav: {str(tgoal[0])}|{str(tgoal[0])}')
+        self.node.get_logger().info(f'Sending to Nav: {str(tgoal[0])}|{str(tgoal[1])}')
         goal_pose.pose.pose.position.x = tgoal[0]
         goal_pose.pose.pose.position.y = tgoal[1]
         goal_pose.pose.pose.orientation.z = tgoal[2]
@@ -135,30 +135,6 @@ class MopSkill():
         return virtual_state
 
 
-class VMopSkill():
-    def __init__(self, node, params, finish_event) -> None:
-        # Starting skill : vmop
-        self.params = params
-        self.node = node
-        self.finished_event = finish_event
-        self.success = False
-        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
-
-    
-    def exec(self, virtual_state=None):
-        goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
-        vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.4)
-        time.sleep(time_to_goal)
-        self.success = True
-        self.finished_event.set()
-        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
-        virtual_state = {
-            "x": goal_pos[0],
-            "y": goal_pos[1],
-            "z": goal_pos[2]
-        }
-        return virtual_state
 
 
 
@@ -185,6 +161,34 @@ class VacuumSkill():
         self.finished_event.set()
         self.node.get_logger().info("Finishing up running skill: Vacuum")
         return True
+
+# Virtual Skills
+
+class VMopSkill():
+    def __init__(self, node, params, finish_event) -> None:
+        # Starting skill : vmop
+        self.params = params
+        self.node = node
+        self.finished_event = finish_event
+        self.success = False
+        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
+
+    
+    def exec(self, virtual_state=None):
+        goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
+        vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
+        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]...")
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.5)
+        time.sleep(time_to_goal)
+        self.success = True
+        self.finished_event.set()
+        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
+        virtual_state = {
+            "x": goal_pos[0],
+            "y": goal_pos[1],
+            "z": goal_pos[2]
+        }
+        return virtual_state
 
 
 

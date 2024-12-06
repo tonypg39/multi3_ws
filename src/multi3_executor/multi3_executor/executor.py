@@ -15,11 +15,11 @@ class FragmentExecutor(Node):
         self.robot_name = "robot1"
         self.declare_parameter("skill_list", "-")
         self.declare_parameter("name", "robot")
-        self.declare_parameter("virtual", "false")
+        self.declare_parameter("mode", "real")
         self.callback_group = ReentrantCallbackGroup()
         self.skill_list = self.get_parameter("skill_list").value
         self.robot_name = self.get_parameter("name").value
-        self.virtual_mode = self.get_parameter("virtual").value != "false"
+        self.virtual_mode = self.get_parameter("mode").value != "virtual"
         self.get_logger().info(f"Starting an exec node [{self.robot_name}] with skills: " + self.skill_list)
 
         #FIXME: Add to json
@@ -33,8 +33,8 @@ class FragmentExecutor(Node):
                 "z": .0
             }
         else:
-            virtual_state = None
-
+            self.virtual_state = None
+        
 
         sk_mg = SkillManager(skill_mask=self.skill_list)
         self.sk_map = sk_mg.skill_map()

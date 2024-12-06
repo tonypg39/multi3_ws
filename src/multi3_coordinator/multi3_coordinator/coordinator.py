@@ -17,8 +17,8 @@ class CoordinatorNode(Node):
         }
         # FIXME: Move these dicts to a JSON, specially the second
         self.robot_inventory = {
-            "Turtlebot_02490": ["mop","clean_mop"],
-            "Turtlebot_02489": ["mop","vacuum"]
+            "robot1": ["vacuum","clean_mop"],
+            "robot2": ["put_signal","mop"]
         }
         self.idle_robots = {}
         self.signal_states = ['SYSTEM_START']
@@ -96,19 +96,28 @@ class CoordinatorNode(Node):
         for t in fragment["tasks"]:
             if t["id"].find("|") > -1: # If it is either a signal or a wait 
                 continue
-            if t["id"] not in self.robot_inventory[robot]:
+            if self.get_core_task(t["id"]) not in self.robot_inventory[robot]:
                 able = False
-        self.get_logger().info(f"Checking elegibility for {robot} and tasks {fragment['tasks']} = {able}")
+        # self.get_logger().info(f"Checking elegibility for {robot} and tasks {fragment['tasks']} = {able}")
         return able
+    
+    def get_core_task(self, task):
+        sep = task.find("^")
+        if sep > -1:
+            return task[:sep]
     
     def generate_assigments(self, robots, fragments):
         assignment_dict = {}
         sorted_frags = sorted(fragments, key= lambda x: x["age"], reverse=True)
+        used_robots = set()
         for f in sorted_frags:
             for r in robots:
+                if r in used_robots:
+                    continue
                 if self.check_eligibility(r,f):
                     self.fragments[f["fragment_id"]]["status"] = "executed"
                     assignment_dict[r] = f.copy()
+                    used_robots.add(r)
                     break
         return assignment_dict
             
@@ -140,15 +149,45 @@ class CoordinatorNode(Node):
             self.get_logger().info('service not available, waiting again...')
         self.fragments_futures[fragment["fragment_id"]] = cli.call_async(req)
         
+    def log_fragments(self, fragments, label):
+        for f in fragments:
+            tasks = []
+            for t in f["tasks"]:
+                tasks.append(t["id"])
+            # print(tasks)
+            self.get_logger().info(f'{label} [{f["fragment_id"]}] ==> [{",".join(tasks)}]')
+
+    def log_futures(self):
+        st = "Futures: "
+        for k,v in self.fragments_futures.items():
+            st += f"Fragment: {k} | State: {v.done()}\n"
+        self.get_logger().info(st)
+
+    def check_finished(self):
+        # return False
+        for f_id,frag in self.fragments.items():
+            executed = frag["status"] == "executed"
+            finished = False
+            if executed and self.fragments_futures[f_id].done():
+                finished = True
+            # self.get_logger().info(f"\n{f_id} -> executed = {str(executed)} | finished = {str(finished)}")
+            if not executed or not finished:
+                self.get_logger().info(f"{f_id} -> executed = {str(executed)} | finished = {str(finished)}")
+                return False
+        return True
+        
 
 
     def assign(self):
+        self.get_logger().info("\n\n------Assignment window------")
+        if self.check_finished():
+            self.destroy_node()
         robots = self.get_idle_robots()
         fragments = self.get_active_fragments()
-        self.get_logger().info("\n\n------Assignment window------")
-        self.get_logger().info(f"The active fragments are: {fragments}")
+        
+        self.log_fragments(fragments, "Active fragment")
+        self.log_futures()
         self.get_logger().info(f"The active robots are: {robots}")
-
         assignments = self.generate_assigments(robots, fragments)
         # print(assignments)
         
@@ -159,6 +198,8 @@ class CoordinatorNode(Node):
         for f in fragments:
             if self.fragments[f["fragment_id"]]["status"] == "waiting":
                 self.fragments[f["fragment_id"]]["age"] += 1
+        
+
 
 
 
