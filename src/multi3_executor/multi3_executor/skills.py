@@ -6,7 +6,14 @@ from rclpy.action import ActionClient
 from threading import Event
 import json
 import numpy as np
+import math
 # It includes always wait and send as base skills
+
+def estimate_mov_time(pos_a, pos_b, velocity):
+    dist = math.sqrt((pos_a[0] - pos_b[0])**2 + (pos_a[0] - pos_b[1])**2)
+    t = dist / velocity
+    return t
+
 
 class Navigator():
 
@@ -62,6 +69,7 @@ class WaitSkill():
         wait_str = self.params["target"]
         self.wait_flags = wait_str.split('&')
         self.wait_for_all = Event()
+        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
         
     
     def update_flags(self,msg):
@@ -75,11 +83,12 @@ class WaitSkill():
                 return False
         return True
 
-    def exec(self):
+    def exec(self, virtual_state=None):
         self.wait_for_all.wait()
         self.success = True
+        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
         self.finish_event.set()
-        return True
+        return virtual_state
 
 
 class SendSkill():
@@ -90,7 +99,7 @@ class SendSkill():
         self.success = False
         self.publisher = self.node.create_publisher(String, "/mission_signals",10)
     
-    def exec(self):
+    def exec(self, virtual_state):
         # It needs params["target"]
         task_id = self.params["target"]
         msg = String()
@@ -98,7 +107,7 @@ class SendSkill():
         self.publisher.publish(msg)
         self.success = True
         self.finish_event.set()
-        return True
+        return virtual_state
         
 
 class MopSkill():
@@ -112,9 +121,9 @@ class MopSkill():
         # Create a navigator obj
         self.wait_for_nav = Event()
         self.nav = Navigator(self.node, self.wait_for_nav)
-        self.node.get_logger().info("Starting up skill: Mop")
+        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
     
-    def exec(self):
+    def exec(self,virtual_state=None):
         # It needs: params["room"]["size"]
         print("Received the params: ")
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
@@ -122,8 +131,34 @@ class MopSkill():
         self.wait_for_nav.wait()
         self.success = self.nav.nav_success
         self.finished_event.set()
-        self.node.get_logger().info("Finishing up running skill: Mop")
-        return True
+        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
+        return virtual_state
+
+
+class VMopSkill():
+    def __init__(self, node, params, finish_event) -> None:
+        # Starting skill : vmop
+        self.params = params
+        self.node = node
+        self.finished_event = finish_event
+        self.success = False
+        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
+
+    
+    def exec(self, virtual_state=None):
+        goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
+        vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.4)
+        time.sleep(time_to_goal)
+        self.success = True
+        self.finished_event.set()
+        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
+        virtual_state = {
+            "x": goal_pos[0],
+            "y": goal_pos[1],
+            "z": goal_pos[2]
+        }
+        return virtual_state
 
 
 
@@ -151,8 +186,38 @@ class VacuumSkill():
         self.node.get_logger().info("Finishing up running skill: Vacuum")
         return True
 
-# Skill Manager
 
+
+class VVacuumSkill():
+    def __init__(self, node, params, finish_event) -> None:
+        # Starting skill : vmop
+        self.params = params
+        self.node = node
+        self.finished_event = finish_event
+        self.success = False
+        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
+
+    
+    def exec(self, virtual_state=None):
+        goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
+        vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
+        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]...")
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.8)
+        
+        time.sleep(time_to_goal)
+        self.success = True
+        self.finished_event.set()
+        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
+        virtual_state = {
+            "x": goal_pos[0],
+            "y": goal_pos[1],
+            "z": goal_pos[2]
+        }
+        return virtual_state
+
+
+
+# Skill Manager
 
 class SkillManager():
     def __init__(self, skill_mask) -> None:
@@ -162,8 +227,8 @@ class SkillManager():
         self.sk_map = {
             "wait_until": WaitSkill,
             "send_signal": SendSkill,
-            "mop": MopSkill,
-            "vacuum": VacuumSkill
+            "mop": VMopSkill,
+            "vacuum": VVacuumSkill
         }
         self.sk_map = self.filter_skills(self.sk_map,skill_mask)
     

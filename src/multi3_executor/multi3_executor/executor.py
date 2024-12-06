@@ -15,15 +15,26 @@ class FragmentExecutor(Node):
         self.robot_name = "robot1"
         self.declare_parameter("skill_list", "-")
         self.declare_parameter("name", "robot")
+        self.declare_parameter("virtual", "false")
         self.callback_group = ReentrantCallbackGroup()
         self.skill_list = self.get_parameter("skill_list").value
         self.robot_name = self.get_parameter("name").value
+        self.virtual_mode = self.get_parameter("virtual").value != "false"
         self.get_logger().info(f"Starting an exec node [{self.robot_name}] with skills: " + self.skill_list)
 
         #FIXME: Add to json
         self.settings = {
             "heartbeat_period": 3.0
         }
+        if self.virtual_mode:
+            self.virtual_state = {
+                "x": .0,
+                "y": .0,
+                "z": .0
+            }
+        else:
+            virtual_state = None
+
 
         sk_mg = SkillManager(skill_mask=self.skill_list)
         self.sk_map = sk_mg.skill_map()
@@ -75,7 +86,7 @@ class FragmentExecutor(Node):
             
             wait_for_skill = Event()
             sk = self.sk_map[t["id"]](self, t["vars"],wait_for_skill)
-            sk.exec()
+            self.virtual_state = sk.exec(self.virtual_state)
             wait_for_skill.wait()
             failure |= sk.success
 

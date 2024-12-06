@@ -17,7 +17,7 @@ class NavToPoseActionClient(Node):
         # self.create_subscription(String, '/execute', self.execute_mission, 10)
         self.get_logger().info('Initializing the navigator')
         self.goal_poses = [[0.5,0.5]]
-        self.tgoal = [-4.0,-0.4, 0.0]
+        self.tgoal = [-4.0,2.8, 0.0]
         self.send_goal()
 
 
