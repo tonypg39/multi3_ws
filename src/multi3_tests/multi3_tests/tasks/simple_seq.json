@@ -1,0 +1,33 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "sequential",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "mop",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "door": {
+                    "x": 10.0,
+                    "y": 10.0
+                },
+                "size": 1
+            }
+        },
+        {
+            "task_id": "vacuum",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "door": {
+                    "x": 10.0,
+                    "y": 10.0
+                },
+                "size": 2
+            }
+        }
+    ]
+}

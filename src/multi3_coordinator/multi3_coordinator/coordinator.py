@@ -9,21 +9,44 @@ from multi3_interfaces.srv import Fragment
 from ament_index_python import get_package_prefix
 
 class CoordinatorNode(Node):
-    def __init__(self, fragments):
+    def __init__(self):
         super().__init__("multi3_coordinator")
         self.coord_settings = {
             "signal_states_period": 2.0,
             "assignment_period": 4.0
         }
         # FIXME: Move these dicts to a JSON, specially the second
-        self.robot_inventory = {
-            "robot1": ["vacuum","clean_mop"],
-            "robot2": ["put_signal","mop"]
-        }
+        # self.robot_inventory = {
+        #     "robot_1": ["vacuum","clean_mop"],
+        #     "robot_2": ["put_signal","mop"]
+        # }
         self.idle_robots = {}
+        self.robot_states = {}
         self.signal_states = ['SYSTEM_START']
+        
+        # Declare Parameters
+        self.declare_parameter("test_id", "")
+        self.declare_parameter("mode", "")
+
+        test_id = self.get_parameter("test_id").value
+        mode = self.get_parameter("mode").value
+
+        self.get_logger().info(f"Starting the Coordinator node with params:\ntest_id = {test_id}\nmode = {mode}")
+        if test_id == "":
+            self.get_logger().fatal("No test_id specified!!")
+            return
+        
+        if test_id == "":
+            self.get_logger().fatal("No mode specified!!")
+            return
+    
+        self.robot_inventory = self.read_inventory(test_id)
+        fragments = self.read_fragments(test_id, mode)
+
         self.create_subscription(String, "/mission_signals",self.update_signal_state,10)
         self.create_subscription(String, "/hb_broadcast",self.update_hb,10)
+        
+        
         self.signal_publisher = self.create_publisher(String, '/signal_states', 10)
         self.signal_pub_timer = self.create_timer(self.coord_settings['signal_states_period'],self.broadcast_signal_states)
         self.assignment_timer = self.create_timer(self.coord_settings['assignment_period'],self.assign)
@@ -35,7 +58,22 @@ class CoordinatorNode(Node):
         # self.get_logger().info(len(self.fragments))
         
 
+    def read_fragments(self, test_id, mode):
+        package_path = get_package_prefix("multi3_tests").replace("install","src")
+        # print(package_path)
+        with open(f"{package_path}/multi3_tests/tests/{test_id}/tasks_{mode}.json") as f:
+            frags = json.load(f)
+        return frags
+
+    def read_inventory(self, test_id):
+        package_path = get_package_prefix("multi3_tests").replace("install","src")
+        # print(package_path)
+        with open(f"{package_path}/multi3_tests/tests/{test_id}/inventory.json") as f:
+            inventory = json.load(f)
+        return inventory
     
+
+
     def load_fragments(self, fragments):
         c = 0
         F = {}
@@ -59,6 +97,8 @@ class CoordinatorNode(Node):
             self.idle_robots[st[0]] = True
         else:
             self.idle_robots[st[0]] = False
+        
+        self.robot_states[st[0]] = st[1]
         
 
 
@@ -163,6 +203,12 @@ class CoordinatorNode(Node):
             st += f"Fragment: {k} | State: {v.done()}\n"
         self.get_logger().info(st)
 
+    def log_robots(self):
+        s = "|| "
+        for k,v in self.robot_states.items():
+            s += f"{k} => {v} || "
+        self.get_logger().info(s)
+
     def check_finished(self):
         # return False
         for f_id,frag in self.fragments.items():
@@ -172,7 +218,7 @@ class CoordinatorNode(Node):
                 finished = True
             # self.get_logger().info(f"\n{f_id} -> executed = {str(executed)} | finished = {str(finished)}")
             if not executed or not finished:
-                self.get_logger().info(f"{f_id} -> executed = {str(executed)} | finished = {str(finished)}")
+                # self.get_logger().info(f"{f_id} -> executed = {str(executed)} | finished = {str(finished)}")
                 return False
         return True
         
@@ -181,13 +227,15 @@ class CoordinatorNode(Node):
     def assign(self):
         self.get_logger().info("\n\n------Assignment window------")
         if self.check_finished():
+            self.get_logger().info("$$*MISSION_COMPLETED*$$")
             self.destroy_node()
         robots = self.get_idle_robots()
         fragments = self.get_active_fragments()
         
         self.log_fragments(fragments, "Active fragment")
-        self.log_futures()
-        self.get_logger().info(f"The active robots are: {robots}")
+        # self.log_futures()
+        self.log_robots()
+        # self.get_logger().info(f"The active robots are: {robots}")
         assignments = self.generate_assigments(robots, fragments)
         # print(assignments)
         
@@ -213,7 +261,7 @@ def read_fragments():
 def main(args=None):
     rclpy.init(args=args)
     fragments = read_fragments()
-    coord = CoordinatorNode(fragments)
+    coord = CoordinatorNode()
     rclpy.spin(coord)
     coord.destroy_node()
     rclpy.shutdown()

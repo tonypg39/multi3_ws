@@ -1,0 +1,39 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "parallel",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "task1",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "x": 0,
+                "y": 0,
+                "role": "C"
+            }
+        },
+        {
+            "task_id": "task2",
+            "sequence": "NIL",
+            "type": "concrete",
+            "variables": {
+                "x": 0,
+                "y": 0,
+                "role": "B"
+            }
+        },
+        {
+            "task_id": "task3",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "xrem": 0,
+                "yrem": 0,
+                "roles": "C"
+            }
+        }
+    ]
+}

@@ -1,0 +1,95 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "sequential",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "x0",
+            "type": "concrete",
+            "sequence": "wet_caution",
+            "variables": {
+                "x": 0,
+                "y": 0,
+                "role": "C"
+            }
+        },
+        {
+            "task_id": "clean_room",
+            "type": "multi-instance",
+            "variables": {
+                "loopType": "parallel",
+                "loopCount": 3
+            },
+            "subtasks": [
+                {
+                    "task_id": "vacuum",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                        "role": "A"
+                    }
+                },
+                {
+                    "task_id": "clean_mops",
+                    "type": "concrete",
+                    "sequence": "mopping_sequence",
+                    "variables": {
+                        "role": "B"
+                    }
+                },
+                {
+                    "task_id": "mop",
+                    "type": "concrete",
+                    "sequence": "mopping_sequence",
+                    "variables": {
+                        "role": "B"
+                    }
+                },
+                {
+                    "task_id": "polish",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                        "role": "A"
+                    }
+                }
+            ]
+        },
+        {
+            "task_id": "t3",
+            "type": "abstract",
+            "method": "parallel",
+            "subtasks":[
+                {
+                    "task_id": "x4",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                        "role": "B"
+                    }
+                },
+                {
+                    "task_id": "x5",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                        "role": "B"
+                    }
+                }
+
+            ]
+        },
+        {
+            "task_id": "remove_signal",
+            "type": "concrete",
+            "sequence": "wet_caution",
+            "variables": {
+                "xrem": 0,
+                "yrem": 0,
+                "roles": "C"
+            }
+        }
+    ]
+}

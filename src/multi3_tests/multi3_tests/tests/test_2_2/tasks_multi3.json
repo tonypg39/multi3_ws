@@ -1,0 +1,74 @@
+[
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^0",
+                "vars": {
+                    "door": {
+                        "x": -6.4366632551568,
+                        "y": -0.9525060008533579
+                    }
+                }
+            },
+            {
+                "id": "send_signal|vacuum^0",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "vacuum^0",
+        "tasks": [
+            {
+                "id": "mop^0",
+                "vars": {
+                    "door": {
+                        "x": -6.4366632551568,
+                        "y": -0.9525060008533579
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^0",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^1",
+                "vars": {
+                    "door": {
+                        "x": 7.1082893559851,
+                        "y": 0.6141084337261837
+                    }
+                }
+            },
+            {
+                "id": "send_signal|vacuum^1",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "vacuum^1",
+        "tasks": [
+            {
+                "id": "mop^1",
+                "vars": {
+                    "door": {
+                        "x": 7.1082893559851,
+                        "y": 0.6141084337261837
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^1",
+                "vars": {}
+            }
+        ]
+    }
+]

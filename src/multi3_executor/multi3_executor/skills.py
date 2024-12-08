@@ -83,7 +83,7 @@ class WaitSkill():
                 return False
         return True
 
-    def exec(self, virtual_state=None):
+    def exec(self, virtual_state=None,virtual_effort=None):
         self.wait_for_all.wait()
         self.success = True
         self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
@@ -99,7 +99,7 @@ class SendSkill():
         self.success = False
         self.publisher = self.node.create_publisher(String, "/mission_signals",10)
     
-    def exec(self, virtual_state):
+    def exec(self, virtual_state,virtual_effort=None):
         # It needs params["target"]
         task_id = self.params["target"]
         msg = String()
@@ -133,9 +133,6 @@ class MopSkill():
         self.finished_event.set()
         self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
         return virtual_state
-
-
-
 
 
 class VacuumSkill():
@@ -174,12 +171,15 @@ class VMopSkill():
         self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
 
     
-    def exec(self, virtual_state=None):
+    def exec(self, virtual_state=None, virtual_effort=None):
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
         vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
-        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]...")
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.5)
+        
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
+        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
         time.sleep(time_to_goal)
+        self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")
+        time.sleep(virtual_effort)
         self.success = True
         self.finished_event.set()
         self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
@@ -202,13 +202,13 @@ class VVacuumSkill():
         self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
 
     
-    def exec(self, virtual_state=None):
+    def exec(self, virtual_state=None, virtual_effort=None):
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
         vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
-        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]...")
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.8)
-        
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
+        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
         time.sleep(time_to_goal)
+        self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")
         self.success = True
         self.finished_event.set()
         self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
