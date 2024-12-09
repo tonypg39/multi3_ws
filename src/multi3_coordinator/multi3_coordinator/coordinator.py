@@ -7,19 +7,21 @@ from std_msgs.msg import String
 from rclpy.node import Node
 from multi3_interfaces.srv import Fragment
 from ament_index_python import get_package_prefix
+import sys
 
 class CoordinatorNode(Node):
     def __init__(self):
         super().__init__("multi3_coordinator")
         self.coord_settings = {
-            "signal_states_period": 2.0,
-            "assignment_period": 4.0
+            "signal_states_period": 1.0,
+            "assignment_period": 1.5
         }
         # FIXME: Move these dicts to a JSON, specially the second
         # self.robot_inventory = {
         #     "robot_1": ["vacuum","clean_mop"],
         #     "robot_2": ["put_signal","mop"]
         # }
+        self.shutdown_count = -1
         self.idle_robots = {}
         self.robot_states = {}
         self.signal_states = ['SYSTEM_START']
@@ -111,7 +113,19 @@ class CoordinatorNode(Node):
     # Publish the signal_states periodically using a Timer object
     def broadcast_signal_states(self):
         message = String()
-        message.data = json.dumps(self.signal_states)
+        signal_list = self.signal_states
+        if self.shutdown_count > -1:
+            if self.shutdown_count == 0:
+                self.get_logger().info("$$*MISSION_STOPPED*$$")
+                self.assignment_timer.cancel()
+                self.signal_pub_timer.cancel()
+                self.shutdown_count = 5
+                self.destroy_node()
+                rclpy.shutdown()
+                sys.exit(0)
+            signal_list.append("_SHUTDOWN_")
+            self.shutdown_count -= 1
+        message.data = json.dumps(signal_list)
         # self.get_logger().info(f"Sending signals info: {message.data}")
         self.signal_publisher.publish(message)
     
@@ -225,10 +239,13 @@ class CoordinatorNode(Node):
 
 
     def assign(self):
-        self.get_logger().info("\n\n------Assignment window------")
+        if self.shutdown_count > -1:
+            return
         if self.check_finished():
             self.get_logger().info("$$*MISSION_COMPLETED*$$")
-            self.destroy_node()
+            self.shutdown_count = 5
+            # self.destroy_node()
+        self.get_logger().info("\n\n------Assignment window------")
         robots = self.get_idle_robots()
         fragments = self.get_active_fragments()
         

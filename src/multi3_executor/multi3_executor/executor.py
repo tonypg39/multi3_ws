@@ -55,8 +55,14 @@ class FragmentExecutor(Node):
         
         # Create General communication channels 
         self.hearbeat_pub = self.create_publisher(String, "/hb_broadcast", 10)
+        self.signal_subscription = self.create_subscription(String, '/signal_states', self.check_signals, 10)
         self.signal_pub_timer = self.create_timer(self.settings['heartbeat_period'],self._send_heartbeat)
         self.busy = False
+
+    def check_signals(self, msg):
+        self.flags = json.loads(msg.data)
+        if "_SHUTDOWN_" in self.flags:
+            self.destroy_node()
 
     def read_env_states(self, test_id, sample_id):
         package_path = get_package_prefix("multi3_tests").replace("install","src")

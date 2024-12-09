@@ -175,7 +175,7 @@ class VMopSkill():
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
         vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
         
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=1.0)
         self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
         time.sleep(time_to_goal)
         self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")
@@ -205,7 +205,7 @@ class VVacuumSkill():
     def exec(self, virtual_state=None, virtual_effort=None):
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
         vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=1.0)
         self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
         time.sleep(time_to_goal)
         self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")

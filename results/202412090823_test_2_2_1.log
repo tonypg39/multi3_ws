@@ -1,0 +1,282 @@
+[INFO] [launch]: All log files can be found below /home/tony/.ros/log/2024-12-09-08-23-17-809937-tony-vivobook-98404
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [coordinator-1]: process started with pid [98405]
+[INFO] [executor-2]: process started with pid [98407]
+[INFO] [executor-3]: process started with pid [98409]
+[coordinator-1] [INFO] [1733728997.999004390] [coordinator]: Starting the Coordinator node with params:
+[coordinator-1] test_id = test_2_2
+[coordinator-1] mode = multi3
+[executor-3] [INFO] [1733728998.128384061] [robot_2]: Starting an exec node [robot_2] with skills: -
+[executor-3] [INFO] [1733728998.129236486] [robot_2]: Advertising the service...
+[executor-2] [INFO] [1733728998.144535710] [robot_1]: Starting an exec node [robot_1] with skills: -
+[executor-2] [INFO] [1733728998.146188757] [robot_1]: Advertising the service...
+[coordinator-1] [INFO] [1733728999.501745998] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733728999.502453367] [coordinator]: Active fragment [fr_0] ==> [vacuum^0,send_signal|vacuum^0]
+[coordinator-1] [INFO] [1733728999.503304226] [coordinator]: Active fragment [fr_2] ==> [vacuum^1,send_signal|vacuum^1]
+[coordinator-1] [INFO] [1733728999.504013435] [coordinator]: || 
+[coordinator-1] [INFO] [1733729001.001389517] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729001.001798157] [coordinator]: Active fragment [fr_0] ==> [vacuum^0,send_signal|vacuum^0]
+[coordinator-1] [INFO] [1733729001.002091526] [coordinator]: Active fragment [fr_2] ==> [vacuum^1,send_signal|vacuum^1]
+[coordinator-1] [INFO] [1733729001.002361491] [coordinator]: || 
+[coordinator-1] [INFO] [1733729002.501847174] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729002.502600780] [coordinator]: Active fragment [fr_0] ==> [vacuum^0,send_signal|vacuum^0]
+[coordinator-1] [INFO] [1733729002.503352063] [coordinator]: Active fragment [fr_2] ==> [vacuum^1,send_signal|vacuum^1]
+[coordinator-1] [INFO] [1733729002.504009859] [coordinator]: || robot_2 => idle || robot_1 => idle || 
+[executor-3] [INFO] [1733729002.506987001] [robot_2]: Starting the skill vacuum  with params {'door': {'x': -6.4366632551568, 'y': -0.9525060008533579}} and v. effort 7.807336484947229
+[executor-2] [INFO] [1733729002.507100444] [robot_1]: Starting the skill vacuum  with params {'door': {'x': 7.1082893559851, 'y': 0.6141084337261837}} and v. effort 8.705262692139929
+[executor-3] [INFO] [1733729002.507312826] [robot_2]: Starting up skill: VVacuumSkill
+[executor-2] [INFO] [1733729002.507391283] [robot_1]: Starting up skill: VVacuumSkill
+[executor-3] [INFO] [1733729002.507525130] [robot_2]: Simulating going from [0.0,0.0] to [-6.4366632551568,-0.9525060008533579]... [6.506758143803056 secs]
+[executor-2] [INFO] [1733729002.507591838] [robot_1]: Simulating going from [0.0,0.0] to [7.1082893559851,0.6141084337261837]... [7.134767461997952 secs]
+[coordinator-1] [INFO] [1733729004.002143853] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729004.002888335] [coordinator]: || robot_2 => busy  || robot_1 => busy  || 
+[coordinator-1] [INFO] [1733729005.501795649] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729005.502589285] [coordinator]: || robot_2 => busy vacuum^0 || robot_1 => busy vacuum^1 || 
+[coordinator-1] [INFO] [1733729007.002197004] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729007.003004460] [coordinator]: || robot_2 => busy vacuum^0 || robot_1 => busy vacuum^1 || 
+[coordinator-1] [INFO] [1733729008.501938721] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729008.502757278] [coordinator]: || robot_2 => busy vacuum^0 || robot_1 => busy vacuum^1 || 
+[executor-3] [INFO] [1733729009.021819078] [robot_2]: Simulating effort in VVacuumSkill  [7.807336484947229 secs]
+[executor-3] [INFO] [1733729009.022610538] [robot_2]: Finishing up skill: VVacuumSkill
+[executor-3] [INFO] [1733729009.023393446] [robot_2]: Starting the skill send_signal  with params {'target': 'vacuum^0'} and v. effort None
+[executor-2] [INFO] [1733729009.650589282] [robot_1]: Simulating effort in VVacuumSkill  [8.705262692139929 secs]
+[executor-2] [INFO] [1733729009.651416755] [robot_1]: Finishing up skill: VVacuumSkill
+[executor-2] [INFO] [1733729009.652199978] [robot_1]: Starting the skill send_signal  with params {'target': 'vacuum^1'} and v. effort None
+[coordinator-1] [INFO] [1733729010.002169725] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729010.002900917] [coordinator]: Active fragment [fr_1] ==> [mop^0,send_signal|mop^0]
+[coordinator-1] [INFO] [1733729010.003540680] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729010.004211233] [coordinator]: || robot_2 => busy vacuum^0 || robot_1 => busy vacuum^1 || 
+[coordinator-1] [INFO] [1733729011.501790516] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729011.502530669] [coordinator]: Active fragment [fr_1] ==> [mop^0,send_signal|mop^0]
+[coordinator-1] [INFO] [1733729011.503225859] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729011.503977980] [coordinator]: || robot_2 => idle || robot_1 => idle || 
+[executor-2] [INFO] [1733729011.506404595] [robot_1]: Starting the skill mop  with params {'door': {'x': -6.4366632551568, 'y': -0.9525060008533579}} and v. effort 9.814333182952554
+[executor-2] [INFO] [1733729011.506632756] [robot_1]: Starting up skill: VMopSkill
+[executor-2] [INFO] [1733729011.506837158] [robot_1]: Simulating going from [7.1082893559851,0.6141084337261837] to [-6.4366632551568,-0.9525060008533579]... [15.76204818616249 secs]
+[coordinator-1] [INFO] [1733729013.002707897] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729013.003696831] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729013.004403356] [coordinator]: || robot_2 => idle || robot_1 => busy  || 
+[coordinator-1] [INFO] [1733729014.501910479] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729014.502695666] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729014.503433690] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729016.001905665] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729016.002619878] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729016.003020139] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729017.501980018] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729017.502714778] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729017.503460758] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729019.002699910] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729019.003995378] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729019.004927800] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729020.501857820] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729020.502611960] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729020.503374793] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729022.002495380] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729022.003791664] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729022.004888338] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729023.501883679] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729023.502602140] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729023.503302612] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729025.002194699] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729025.002956512] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729025.003683596] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729026.501928971] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729026.502722668] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729026.503408475] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[executor-2] [INFO] [1733729027.285678637] [robot_1]: Simulating effort in VMopSkill  [9.814333182952554 secs]
+[coordinator-1] [INFO] [1733729028.002110695] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729028.002867106] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729028.003735359] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729029.501868603] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729029.502611824] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729029.503264690] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729031.002212514] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729031.003045309] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729031.003746124] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729032.501874833] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729032.502693215] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729032.503596528] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729034.002190775] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729034.002953961] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729034.003892557] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729035.501903711] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729035.502645922] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729035.503362030] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[coordinator-1] [INFO] [1733729037.002193825] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729037.002905713] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729037.003596728] [coordinator]: || robot_2 => idle || robot_1 => busy mop^0 || 
+[executor-2] [INFO] [1733729037.110355178] [robot_1]: Finishing up skill: VMopSkill
+[executor-2] [INFO] [1733729037.111180164] [robot_1]: Starting the skill send_signal  with params {'target': 'mop^0'} and v. effort None
+[coordinator-1] [INFO] [1733729038.501925205] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729038.502703505] [coordinator]: Active fragment [fr_3] ==> [mop^1,send_signal|mop^1]
+[coordinator-1] [INFO] [1733729038.503495416] [coordinator]: || robot_2 => idle || robot_1 => idle || 
+[executor-2] [INFO] [1733729038.507430751] [robot_1]: Starting the skill mop  with params {'door': {'x': 7.1082893559851, 'y': 0.6141084337261837}} and v. effort 4.860909657975649
+[executor-2] [INFO] [1733729038.508552269] [robot_1]: Starting up skill: VMopSkill
+[executor-2] [INFO] [1733729038.509545418] [robot_1]: Simulating going from [-6.4366632551568,-0.9525060008533579] to [7.1082893559851,0.6141084337261837]... [15.270203752629943 secs]
+[coordinator-1] [INFO] [1733729040.002217834] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729040.003190885] [coordinator]: || robot_2 => idle || robot_1 => busy  || 
+[coordinator-1] [INFO] [1733729041.502662427] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729041.503561447] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729043.002676596] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729043.003722402] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729044.502008602] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729044.502814037] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729046.002221741] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729046.002983520] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729047.501815165] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729047.502550853] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729049.002136619] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729049.002872637] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729050.501881848] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729050.502645885] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729052.002131070] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729052.002856198] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729053.501901507] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729053.502680764] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[executor-2] [INFO] [1733729053.796141144] [robot_1]: Simulating effort in VMopSkill  [4.860909657975649 secs]
+[coordinator-1] [INFO] [1733729055.002790327] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729055.003908041] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729056.501797086] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729056.502579423] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[coordinator-1] [INFO] [1733729058.002567280] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729058.003781114] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[executor-2] [INFO] [1733729058.662223157] [robot_1]: Finishing up skill: VMopSkill
+[executor-2] [INFO] [1733729058.663084873] [robot_1]: Starting the skill send_signal  with params {'target': 'mop^1'} and v. effort None
+[coordinator-1] [INFO] [1733729059.501937037] [coordinator]: $$*MISSION_COMPLETED*$$
+[coordinator-1] [INFO] [1733729059.502671865] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729059.503367490] [coordinator]: || robot_2 => idle || robot_1 => busy mop^1 || 
+[executor-2] Traceback (most recent call last):
+[executor-2]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor", line 33, in <module>
+[executor-2]     sys.exit(load_entry_point('multi3-executor==0.0.0', 'console_scripts', 'executor')())
+[executor-2]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/python3.10/site-packages/multi3_executor/executor.py", line 136, in main
+[executor-2]     mt_executor.spin()
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 279, in spin
+[executor-2]     self.spin_once()
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 764, in spin_once
+[executor-2]     self._spin_once_impl(timeout_sec)
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 745, in _spin_once_impl
+[executor-2]     handler, entity, node = self.wait_for_ready_callbacks(
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 691, in wait_for_ready_callbacks
+[executor-2]     return next(self._cb_iter)
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 588, in _wait_for_ready_callbacks
+[executor-2]     wait_set.wait(timeout_nsec)
+[executor-2] KeyboardInterrupt
+[executor-3] Traceback (most recent call last):
+[executor-3]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor", line 33, in <module>
+[executor-3]     sys.exit(load_entry_point('multi3-executor==0.0.0', 'console_scripts', 'executor')())
+[executor-3]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/python3.10/site-packages/multi3_executor/executor.py", line 136, in main
+[executor-3]     mt_executor.spin()
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 279, in spin
+[executor-3]     self.spin_once()
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 764, in spin_once
+[executor-3]     self._spin_once_impl(timeout_sec)
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 745, in _spin_once_impl
+[executor-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 691, in wait_for_ready_callbacks
+[executor-3]     return next(self._cb_iter)
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 588, in _wait_for_ready_callbacks
+[executor-3]     wait_set.wait(timeout_nsec)
+[executor-3] KeyboardInterrupt
+[coordinator-1] Sending assignment:  robot_2 {'status': 'executed', 'fragment_id': 'fr_0', 'age': 2, 'initial_wait': 'SYSTEM_START', 'tasks': [{'id': 'vacuum^0', 'vars': {'door': {'x': -6.4366632551568, 'y': -0.9525060008533579}}}, {'id': 'send_signal|vacuum^0', 'vars': {}}]}
+[coordinator-1] Sending assignment:  robot_1 {'status': 'executed', 'fragment_id': 'fr_2', 'age': 2, 'initial_wait': 'SYSTEM_START', 'tasks': [{'id': 'vacuum^1', 'vars': {'door': {'x': 7.1082893559851, 'y': 0.6141084337261837}}}, {'id': 'send_signal|vacuum^1', 'vars': {}}]}
+[coordinator-1] Sending assignment:  robot_1 {'status': 'executed', 'fragment_id': 'fr_1', 'age': 1, 'initial_wait': 'vacuum^0', 'tasks': [{'id': 'mop^0', 'vars': {'door': {'x': -6.4366632551568, 'y': -0.9525060008533579}}}, {'id': 'send_signal|mop^0', 'vars': {}}]}
+[coordinator-1] Sending assignment:  robot_1 {'status': 'executed', 'fragment_id': 'fr_3', 'age': 19, 'initial_wait': 'vacuum^1', 'tasks': [{'id': 'mop^1', 'vars': {'door': {'x': 7.1082893559851, 'y': 0.6141084337261837}}}, {'id': 'send_signal|mop^1', 'vars': {}}]}
+[coordinator-1] Traceback (most recent call last):
+[coordinator-1]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_coordinator/lib/multi3_coordinator/coordinator", line 33, in <module>
+[coordinator-1]     sys.exit(load_entry_point('multi3-coordinator==0.0.0', 'console_scripts', 'coordinator')())
+[coordinator-1]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_coordinator/lib/python3.10/site-packages/multi3_coordinator/coordinator.py", line 282, in main
+[coordinator-1]     rclpy.spin(coord)
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 222, in spin
+[coordinator-1]     executor.spin_once()
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 705, in spin_once
+[coordinator-1]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 691, in wait_for_ready_callbacks
+[coordinator-1]     return next(self._cb_iter)
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 588, in _wait_for_ready_callbacks
+[coordinator-1]     wait_set.wait(timeout_nsec)
+[coordinator-1] KeyboardInterrupt
+[ERROR] [coordinator-1]: process has died [pid 98405, exit code -2, cmd '/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_coordinator/lib/multi3_coordinator/coordinator --ros-args -r __node:=coordinator --params-file /tmp/launch_params_6mm2x2tn'].
+[ERROR] [executor-3]: process has died [pid 98409, exit code -2, cmd '/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor --ros-args -r __node:=robot_2 --params-file /tmp/launch_params_wjxbjdw7 --params-file /tmp/launch_params_38fm03_9 --params-file /tmp/launch_params_7k878z_d'].
+[ERROR] [executor-2]: process has died [pid 98407, exit code -2, cmd '/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor --ros-args -r __node:=robot_1 --params-file /tmp/launch_params_jpsoo56_ --params-file /tmp/launch_params_8b3rgd24 --params-file /tmp/launch_params_zgfkdg1k'].

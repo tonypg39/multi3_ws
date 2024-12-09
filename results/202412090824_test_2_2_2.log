@@ -1,0 +1,110 @@
+[INFO] [launch]: All log files can be found below /home/tony/.ros/log/2024-12-09-08-24-22-934398-tony-vivobook-98626
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [coordinator-1]: process started with pid [98627]
+[INFO] [executor-2]: process started with pid [98629]
+[INFO] [executor-3]: process started with pid [98631]
+[coordinator-1] [INFO] [1733729063.092617887] [coordinator]: Starting the Coordinator node with params:
+[coordinator-1] test_id = test_2_2
+[coordinator-1] mode = multi3
+[executor-3] [INFO] [1733729063.240897410] [robot_2]: Starting an exec node [robot_2] with skills: -
+[executor-3] [INFO] [1733729063.241386014] [robot_2]: Advertising the service...
+[executor-2] [INFO] [1733729063.242395240] [robot_1]: Starting an exec node [robot_1] with skills: -
+[executor-2] [INFO] [1733729063.242858644] [robot_1]: Advertising the service...
+[coordinator-1] [INFO] [1733729064.595290682] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729064.595937984] [coordinator]: Active fragment [fr_0] ==> [vacuum^0,send_signal|vacuum^0]
+[coordinator-1] [INFO] [1733729064.596557323] [coordinator]: Active fragment [fr_2] ==> [vacuum^1,send_signal|vacuum^1]
+[coordinator-1] [INFO] [1733729064.597136482] [coordinator]: || 
+[coordinator-1] [INFO] [1733729066.095870278] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729066.096680157] [coordinator]: Active fragment [fr_0] ==> [vacuum^0,send_signal|vacuum^0]
+[coordinator-1] [INFO] [1733729066.097405236] [coordinator]: Active fragment [fr_2] ==> [vacuum^1,send_signal|vacuum^1]
+[coordinator-1] [INFO] [1733729066.098053470] [coordinator]: || 
+[coordinator-1] [INFO] [1733729067.595599718] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729067.596397884] [coordinator]: Active fragment [fr_0] ==> [vacuum^0,send_signal|vacuum^0]
+[coordinator-1] [INFO] [1733729067.597213559] [coordinator]: Active fragment [fr_2] ==> [vacuum^1,send_signal|vacuum^1]
+[coordinator-1] [INFO] [1733729067.597898415] [coordinator]: || robot_2 => idle || robot_1 => idle || 
+[executor-3] [INFO] [1733729067.601312494] [robot_2]: Starting the skill vacuum  with params {'door': {'x': -6.4366632551568, 'y': -0.9525060008533579}} and v. effort 7.807336484947229
+[executor-2] [INFO] [1733729067.601545299] [robot_1]: Starting the skill vacuum  with params {'door': {'x': 7.1082893559851, 'y': 0.6141084337261837}} and v. effort 8.705262692139929
+[executor-3] [INFO] [1733729067.601828966] [robot_2]: Starting up skill: VVacuumSkill
+[executor-2] [INFO] [1733729067.601839946] [robot_1]: Starting up skill: VVacuumSkill
+[executor-2] [INFO] [1733729067.602049807] [robot_1]: Simulating going from [0.0,0.0] to [7.1082893559851,0.6141084337261837]... [7.134767461997952 secs]
+[executor-3] [INFO] [1733729067.602205496] [robot_2]: Simulating going from [0.0,0.0] to [-6.4366632551568,-0.9525060008533579]... [6.506758143803056 secs]
+[coordinator-1] [INFO] [1733729069.095720134] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729069.096496802] [coordinator]: || robot_2 => busy  || robot_1 => busy  || 
+[coordinator-1] [INFO] [1733729070.595590420] [coordinator]: 
+[coordinator-1] 
+[coordinator-1] ------Assignment window------
+[coordinator-1] [INFO] [1733729070.596349873] [coordinator]: || robot_2 => busy vacuum^0 || robot_1 => busy vacuum^1 || 
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[executor-2] Traceback (most recent call last):
+[executor-2]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor", line 33, in <module>
+[executor-2]     sys.exit(load_entry_point('multi3-executor==0.0.0', 'console_scripts', 'executor')())
+[executor-2]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/python3.10/site-packages/multi3_executor/executor.py", line 136, in main
+[executor-2]     mt_executor.spin()
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 279, in spin
+[executor-2]     self.spin_once()
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 764, in spin_once
+[executor-2]     self._spin_once_impl(timeout_sec)
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 745, in _spin_once_impl
+[executor-2]     handler, entity, node = self.wait_for_ready_callbacks(
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 691, in wait_for_ready_callbacks
+[executor-2]     return next(self._cb_iter)
+[executor-2]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 588, in _wait_for_ready_callbacks
+[executor-2]     wait_set.wait(timeout_nsec)
+[executor-2] KeyboardInterrupt
+[coordinator-1] Sending assignment:  robot_2 {'status': 'executed', 'fragment_id': 'fr_0', 'age': 2, 'initial_wait': 'SYSTEM_START', 'tasks': [{'id': 'vacuum^0', 'vars': {'door': {'x': -6.4366632551568, 'y': -0.9525060008533579}}}, {'id': 'send_signal|vacuum^0', 'vars': {}}]}
+[coordinator-1] Sending assignment:  robot_1 {'status': 'executed', 'fragment_id': 'fr_2', 'age': 2, 'initial_wait': 'SYSTEM_START', 'tasks': [{'id': 'vacuum^1', 'vars': {'door': {'x': 7.1082893559851, 'y': 0.6141084337261837}}}, {'id': 'send_signal|vacuum^1', 'vars': {}}]}
+[coordinator-1] Traceback (most recent call last):
+[coordinator-1]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_coordinator/lib/multi3_coordinator/coordinator", line 33, in <module>
+[coordinator-1]     sys.exit(load_entry_point('multi3-coordinator==0.0.0', 'console_scripts', 'coordinator')())
+[coordinator-1]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_coordinator/lib/python3.10/site-packages/multi3_coordinator/coordinator.py", line 282, in main
+[coordinator-1]     rclpy.spin(coord)
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 222, in spin
+[coordinator-1]     executor.spin_once()
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 705, in spin_once
+[coordinator-1]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 691, in wait_for_ready_callbacks
+[coordinator-1]     return next(self._cb_iter)
+[coordinator-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 588, in _wait_for_ready_callbacks
+[coordinator-1]     wait_set.wait(timeout_nsec)
+[coordinator-1] KeyboardInterrupt
+[executor-3] Traceback (most recent call last):
+[executor-3]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor", line 33, in <module>
+[executor-3]     sys.exit(load_entry_point('multi3-executor==0.0.0', 'console_scripts', 'executor')())
+[executor-3]   File "/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/python3.10/site-packages/multi3_executor/executor.py", line 136, in main
+[executor-3]     mt_executor.spin()
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 279, in spin
+[executor-3]     self.spin_once()
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 764, in spin_once
+[executor-3]     self._spin_once_impl(timeout_sec)
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 745, in _spin_once_impl
+[executor-3]     handler, entity, node = self.wait_for_ready_callbacks(
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 691, in wait_for_ready_callbacks
+[executor-3]     return next(self._cb_iter)
+[executor-3]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 588, in _wait_for_ready_callbacks
+[executor-3]     wait_set.wait(timeout_nsec)
+[executor-3] KeyboardInterrupt
+[ERROR] [coordinator-1]: process has died [pid 98627, exit code -2, cmd '/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_coordinator/lib/multi3_coordinator/coordinator --ros-args -r __node:=coordinator --params-file /tmp/launch_params_84iktpva'].
+[executor-3] [INFO] [1733729074.112983702] [robot_2]: Simulating effort in VVacuumSkill  [7.807336484947229 secs]
+[executor-3] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[executor-3] [INFO] [1733729074.113798899] [robot_2]: Finishing up skill: VVacuumSkill
+[executor-3] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[executor-3] [INFO] [1733729074.114653547] [robot_2]: Starting the skill send_signal  with params {'target': 'vacuum^0'} and v. effort None
+[executor-3] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[executor-3] The following exception was never retrieved: Failed to create publisher: rcl node's context is invalid, at ./src/rcl/node.c:428
+[ERROR] [executor-3]: process has died [pid 98631, exit code -2, cmd '/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor --ros-args -r __node:=robot_2 --params-file /tmp/launch_params_pzoehw51 --params-file /tmp/launch_params_8v5tidey --params-file /tmp/launch_params_v7lagzh7'].
+[executor-2] [INFO] [1733729074.742297644] [robot_1]: Simulating effort in VVacuumSkill  [8.705262692139929 secs]
+[executor-2] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[executor-2] [INFO] [1733729074.742987324] [robot_1]: Finishing up skill: VVacuumSkill
+[executor-2] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[executor-2] [INFO] [1733729074.743721771] [robot_1]: Starting the skill send_signal  with params {'target': 'vacuum^1'} and v. effort None
+[executor-2] Failed to publish log message to rosout: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[executor-2] The following exception was never retrieved: Failed to create publisher: rcl node's context is invalid, at ./src/rcl/node.c:428
+[ERROR] [executor-2]: process has died [pid 98629, exit code -2, cmd '/home/tony/Documents/gssi/RESEARCH/seams25_extension/multi3_ws/install/multi3_executor/lib/multi3_executor/executor --ros-args -r __node:=robot_1 --params-file /tmp/launch_params_3vmjzu28 --params-file /tmp/launch_params_2k0rtpe9 --params-file /tmp/launch_params_g7uibbw_'].

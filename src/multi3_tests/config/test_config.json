@@ -1,0 +1,5 @@
+{
+    "robot_counts": [2,3,5,10],
+    "mission_sizes": [2,10,15,20],
+    "sample_size": 20
+}
