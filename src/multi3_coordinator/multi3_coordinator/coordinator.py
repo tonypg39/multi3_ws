@@ -32,8 +32,8 @@ class CoordinatorNode(Node):
 
         test_id = self.get_parameter("test_id").value
         mode = self.get_parameter("mode").value
-
-        self.get_logger().info(f"Starting the Coordinator node with params:\ntest_id = {test_id}\nmode = {mode}")
+        self.get_logger().info("$$**MISSION_START**$$")
+        self.get_logger().info(f"Starting the Coordinator node with params ==> test_id = {test_id} || mode = {mode}")
         if test_id == "":
             self.get_logger().fatal("No test_id specified!!")
             return
@@ -214,11 +214,11 @@ class CoordinatorNode(Node):
     def log_futures(self):
         st = "Futures: "
         for k,v in self.fragments_futures.items():
-            st += f"Fragment: {k} | State: {v.done()}\n"
+            st += f"Fragment: {k} | State: {v.done()}||"
         self.get_logger().info(st)
 
     def log_robots(self):
-        s = "|| "
+        s = "$$**ROBOTS_STATE**$$|| "
         for k,v in self.robot_states.items():
             s += f"{k} => {v} || "
         self.get_logger().info(s)
@@ -245,7 +245,7 @@ class CoordinatorNode(Node):
             self.get_logger().info("$$*MISSION_COMPLETED*$$")
             self.shutdown_count = 5
             # self.destroy_node()
-        self.get_logger().info("\n\n------Assignment window------")
+        self.get_logger().info("------Assignment window------")
         robots = self.get_idle_robots()
         fragments = self.get_active_fragments()
         
@@ -264,8 +264,6 @@ class CoordinatorNode(Node):
             if self.fragments[f["fragment_id"]]["status"] == "waiting":
                 self.fragments[f["fragment_id"]]["age"] += 1
         
-
-
 
 
 def read_fragments():

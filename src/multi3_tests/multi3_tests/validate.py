@@ -44,8 +44,7 @@ def generate_inventory(skills, num_robots):
     # Convert defaultdict to regular dictionary
     return dict(robot_inventory)
 
-def generate_mission_data(mission_size):
-    room_limits = [-10,10]
+def generate_mission_data(mission_size, room_limits):
     d = {
         "instances" : {
             "vacuum": [],
@@ -61,11 +60,11 @@ def generate_mission_data(mission_size):
         d["instances"]["polish"].append({"door":{"x":s_x,"y":s_y}})
     return d
 
-def generate_env_state(mission_size):
+def generate_env_state(mission_size, effort_limits):
     time_ranges = {
-        "mop": [1,10],
-        "vacuum": [1,10],
-        "polish": [1,10]
+        "mop": effort_limits,
+        "vacuum": effort_limits,
+        "polish": effort_limits
     }
     env_states = {
         "mop": [],
@@ -78,16 +77,21 @@ def generate_env_state(mission_size):
             env_states[k].append(x)
     return env_states
 
-def generate_validation_specs(node,path,sampling_size, mission_sizes, robot_counts):
+def generate_validation_specs(node,path,test_config):
+    sampling_size = test_config["sampling_size"]
+    mission_sizes = test_config["mission_sizes"]
+    robot_counts = test_config["robot_counts"]
+    room_limits = test_config["room_limits"]
+    effort_limits = test_config["effort_limits"] 
 
     for ms in mission_sizes:
         for rc in robot_counts:
             node.get_logger().info(f"Working on Test : {ms}|{rc}")
             inv = generate_inventory(["mop","vacuum","polish"], rc)
-            data = generate_mission_data(ms)
+            data = generate_mission_data(ms,room_limits)
             env_states = []
             for si in range(sampling_size):
-                env_st = generate_env_state(ms)
+                env_st = generate_env_state(ms, effort_limits)
                 env_states.append(env_st)
             
             plans = generate_fragmented_plans(path, ms, data, inv)
@@ -106,24 +110,23 @@ def generate_validation_specs(node,path,sampling_size, mission_sizes, robot_coun
                     json.dump(obj,f)
             
 class TestGenerator(Node):
-    def __init__(self, sampling_size, mission_sizes, robot_counts):
+    def __init__(self, test_config):
         super().__init__("multi3_test_generator")
-        self.sampling_size = sampling_size
-        self.mission_sizes = mission_sizes
-        self.robot_counts = robot_counts
+        self.test_config = test_config
         self.package_path = get_package_prefix("multi3_tests").replace("install","src") + "/multi3_tests"
         
     def generate(self):
-        generate_validation_specs(self,self.package_path,self.sampling_size, self.mission_sizes, self.robot_counts)
+        generate_validation_specs(self,self.package_path,self.test_config)
 
 
 
 def main(args=None):
-    sampling_size = 20
-    mission_sizes = [2,10,15,20]
-    robot_counts = [2,3,5,10]
+    base_path = get_package_prefix("multi3_tests").replace("install","src")
+    with open(base_path + "/config/test_config.json") as f:
+        test_config = json.load(f)
+    
     rclpy.init(args=args)
-    test_gen = TestGenerator(sampling_size,mission_sizes,robot_counts)
+    test_gen = TestGenerator(test_config)
     test_gen.generate()
     test_gen.destroy_node()
     rclpy.shutdown()
