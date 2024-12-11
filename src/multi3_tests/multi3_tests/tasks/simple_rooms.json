@@ -26,6 +26,13 @@
                     "sequence": "NIL",
                     "variables": {
                     }
+                },
+                {
+                    "task_id": "polish",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                    }
                 }
             ]
         }

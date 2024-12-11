@@ -1,1 +1,1 @@
-{"robot_1": ["mop"], "robot_2": ["polish", "vacuum"], "robot_3": ["vacuum", "polish"], "robot_4": ["polish"], "robot_5": ["mop", "vacuum"]}
+{"robot_1": ["polish", "mop"], "robot_2": ["mop", "vacuum"], "robot_3": ["vacuum", "polish", "mop"], "robot_4": ["polish"], "robot_5": ["vacuum"]}

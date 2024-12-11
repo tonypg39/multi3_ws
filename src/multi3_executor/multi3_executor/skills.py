@@ -159,7 +159,33 @@ class VacuumSkill():
         self.node.get_logger().info("Finishing up running skill: Vacuum")
         return True
 
+class PolishSkill():
+    def __init__(self, node, params, finish_event) -> None:
+        # Starting skill : vmop
+        self.params = params
+        self.node = node
+        self.finished_event = finish_event
+        self.success = False
+
+        # Create a navigator obj
+        self.wait_for_nav = Event()
+        self.nav = Navigator(self.node, self.wait_for_nav)
+        self.node.get_logger().info("Starting up skill: Polish")
+    
+    def exec(self):
+        # It needs: params["room"]["size"]
+        print("Received the params: ")
+        goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
+        self.nav.send_goal(goal_pos)
+        self.wait_for_nav.wait()
+        self.success = self.nav.nav_success
+        self.finished_event.set()
+        self.node.get_logger().info("Finishing up running skill: Polish")
+        return True
+
 # Virtual Skills
+#SE-FIX: Create a single class VirtualNavigate skill, and since the skill manager instantiates them,
+#        you can provide a specific skill name in the constructor
 
 class VMopSkill():
     def __init__(self, node, params, finish_event) -> None:
@@ -175,7 +201,7 @@ class VMopSkill():
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
         vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
         
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=1.0)
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
         self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
         time.sleep(time_to_goal)
         self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")
@@ -190,8 +216,6 @@ class VMopSkill():
         }
         return virtual_state
 
-
-
 class VVacuumSkill():
     def __init__(self, node, params, finish_event) -> None:
         # Starting skill : vmop
@@ -205,7 +229,34 @@ class VVacuumSkill():
     def exec(self, virtual_state=None, virtual_effort=None):
         goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
         vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
-        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=1.0)
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
+        self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
+        time.sleep(time_to_goal)
+        self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")
+        self.success = True
+        self.finished_event.set()
+        self.node.get_logger().info(f"Finishing up skill: {self.__class__.__name__}")
+        virtual_state = {
+            "x": goal_pos[0],
+            "y": goal_pos[1],
+            "z": goal_pos[2]
+        }
+        return virtual_state
+
+class VPolishSkill():
+    def __init__(self, node, params, finish_event) -> None:
+        # Starting skill : vmop
+        self.params = params
+        self.node = node
+        self.finished_event = finish_event
+        self.success = False
+        self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
+
+    
+    def exec(self, virtual_state=None, virtual_effort=None):
+        goal_pos = [self.params["door"]["x"],self.params["door"]["y"],0.0]
+        vpos = [virtual_state["x"],virtual_state["y"],virtual_state["z"]]
+        time_to_goal = estimate_mov_time(vpos, goal_pos, velocity=0.3)
         self.node.get_logger().info(f"Simulating going from [{str(vpos[0])},{str(vpos[1])}] to [{str(goal_pos[0])},{str(goal_pos[1])}]... [{time_to_goal} secs]")
         time.sleep(time_to_goal)
         self.node.get_logger().info(f"Simulating effort in {self.__class__.__name__}  [{virtual_effort} secs]")
@@ -220,9 +271,8 @@ class VVacuumSkill():
         return virtual_state
 
 
-
 # Skill Manager
-
+# SE-FIX: Move the instantiation of the classes here, to avoid the need to rebring up the navigators
 class SkillManager():
     def __init__(self, skill_mask) -> None:
         """
@@ -232,7 +282,8 @@ class SkillManager():
             "wait_until": WaitSkill,
             "send_signal": SendSkill,
             "mop": VMopSkill,
-            "vacuum": VVacuumSkill
+            "vacuum": VVacuumSkill,
+            "polish": VPolishSkill
         }
         self.sk_map = self.filter_skills(self.sk_map,skill_mask)
     

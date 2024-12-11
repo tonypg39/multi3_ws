@@ -86,7 +86,7 @@ def generate_validation_specs(node,path,test_config):
 
     for ms in mission_sizes:
         for rc in robot_counts:
-            node.get_logger().info(f"Working on Test : {ms}|{rc}")
+            node.get_logger().info(f"Working on Test : {rc}|{ms}")
             inv = generate_inventory(["mop","vacuum","polish"], rc)
             data = generate_mission_data(ms,room_limits)
             env_states = []

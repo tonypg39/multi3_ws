@@ -54,20 +54,17 @@ def main():
                 print(f"Processing test:{test_id} | Sample {si}")
                 timestamp = datetime.now().strftime("%Y%m%d%H%M")
                 output_filename = f"{output_path}/{timestamp}_{test_id}_{si}_m3.log"
-                cmd = f"ros2 launch multi3_tests test.launch.py test_id:={test_id} > {output_filename} 2>&1" 
+                cmd = f"ros2 launch multi3_tests test.launch.py test_id:={test_id} sample_id:=s{si} > {output_filename} 2>&1" 
                 print(f"Running [multi3] => {cmd} ...")
                 os.popen(cmd)
                 wait_and_kill(output_filename)
                 output_filename = f"{output_path}/{timestamp}_{test_id}_{si}_bl.log"
-                cmd = f"ros2 launch multi3_tests test.launch.py test_id:={test_id} mode:=baseline > {output_filename} 2>&1" 
+                cmd = f"ros2 launch multi3_tests test.launch.py test_id:={test_id} sample_id:=s{si} mode:=baseline > {output_filename} 2>&1" 
                 print(f"Running [baseline] => {cmd} ...")
                 os.popen(cmd)
                 wait_and_kill(output_filename)
                 
                 
-
-
-
 
 if __name__ == "__main__":
     # kill_ros2_nodes()

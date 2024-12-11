@@ -165,6 +165,11 @@ class CoordinatorNode(Node):
         sorted_frags = sorted(fragments, key= lambda x: x["age"], reverse=True)
         used_robots = set()
         for f in sorted_frags:
+            if "robot" in f.keys():
+                if f["robot"] in robots:
+                    self.fragments[f["fragment_id"]]["status"] = "executed"
+                    assignment_dict[f["robot"]] = f.copy()
+                continue
             for r in robots:
                 if r in used_robots:
                     continue
@@ -257,7 +262,7 @@ class CoordinatorNode(Node):
         # print(assignments)
         
         for k,v in assignments.items():
-            print("Sending assignment: ", k,v)
+            # print("Sending assignment: ", k,v)
             self.send_assignment(k,v)
         # Increase the age of the unpicked fragments
         for f in fragments:
