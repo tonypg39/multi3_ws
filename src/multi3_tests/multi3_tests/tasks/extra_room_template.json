@@ -1,0 +1,42 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "sequential",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "vacuum^$ROOM_NUMBER$",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "door": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "task_id": "mop^$ROOM_NUMBER$",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "door": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "task_id": "polish^$ROOM_NUMBER$",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {
+                "door": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        }
+    ]
+}
