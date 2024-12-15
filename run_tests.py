@@ -63,7 +63,33 @@ def main():
                 print(f"Running [baseline] => {cmd} ...")
                 os.popen(cmd)
                 wait_and_kill(output_filename)
-                
+
+
+
+def multi_main():
+    ws_path = "./"
+    output_path = "./results"
+    with open(ws_path + "src/multi3_tests/config/test_config.json", "r") as f:
+        test_config = json.load(f)
+    
+    # Fixed mission size at 10
+    ms = 10
+    si = 0
+
+    for rc in test_config["robot_counts"]:
+        test_id = f"test_{rc}_{ms}"
+        print(f"Processing test:{test_id} | Sample {si}")
+        timestamp = datetime.now().strftime("%Y%m%d%H%M")
+        output_filename = f"{output_path}/{timestamp}_M{test_id}_{si}_m3.log"
+        cmd = f"ros2 launch multi3_tests test.launch.py test_id:=M{test_id} sample_id:=s{si} > {output_filename} 2>&1" 
+        print(f"Running [multi3] => {cmd} ...")
+        os.popen(cmd)
+        wait_and_kill(output_filename)
+        output_filename = f"{output_path}/{timestamp}_M0{test_id}_{si}_bl.log"
+        cmd = f"ros2 launch multi3_tests test.launch.py test_id:=M0{test_id} sample_id:=s{si} mode:=baseline > {output_filename} 2>&1" 
+        print(f"Running [baseline] => {cmd} ...")
+        os.popen(cmd)
+        wait_and_kill(output_filename)
                 
 
 if __name__ == "__main__":
@@ -73,7 +99,11 @@ if __name__ == "__main__":
     # cmdline.add_argument('--id', default="")
     flags, unk_args = cmdline.parse_known_args()
     f_mode = flags.mode
+
+    # Add another mode to run the multi-mission 
     if f_mode == "generate":
         main()
+    elif f_mode == "multi-mission":
+        multi_main()
     else:
         kill_ros2_nodes()

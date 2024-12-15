@@ -111,6 +111,9 @@ class FragmentExecutor(Node):
             elif mi_sep > -1:
                 core_task = t["id"][:mi_sep]
                 if self.virtual_mode:
+                    self.get_logger().info(f"The actual core task is: {core_task}")
+                    self.get_logger().info(f"The id is: {int(t['id'][mi_sep+1:])}")
+                    self.get_logger().info(f"The env_states are is: {self.env_states}")
                     virtual_effort = self.env_states[core_task][int(t["id"][mi_sep+1:])]
                 t["id"] = core_task
 

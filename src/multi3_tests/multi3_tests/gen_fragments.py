@@ -197,12 +197,10 @@ def generate_fragmented_plans(path, mission_size, pdata, inventory):
     }
     ##  Multi3 generation
     generate_fragments(tasks,[prev.copy()],-1)
-    building_sequences = {}
     D_m3 = fragments + sequence2fragments(building_sequences)
 
     ## Baseline 
     gen_seq_bl(tasks,prev.copy(),-1)
-    # print(building_sequences)
     D_bl = sequence2fragments(bseq_bl,preassigned=True)
 
     # Call both generators and create tasks_baseline.json and tasks_multi3.json and put them inside the test folder
@@ -210,6 +208,43 @@ def generate_fragmented_plans(path, mission_size, pdata, inventory):
         "multi3": D_m3,
         "baseline": D_bl
     }
+
+
+def generate_bl_plans(mission, pdata, inventory):
+    global bseq_bl, fragments, robot_inventory, data
+    tasks = mission
+
+    data = pdata
+    robot_inventory = inventory
+    bseq_bl = {}
+    fragments = []
+    prev = {
+        "task_id": "SYSTEM_START",
+        "type": "concrete",
+        "roles": "STARTER",
+        "sequence": "NIL",
+        "variables": {}
+    }
+    gen_seq_bl(tasks, prev.copy(), -1)
+    plans_bl = sequence2fragments(bseq_bl, preassigned=True)
+    return plans_bl
+
+def generate_multi3_plans(mission, pdata):
+    global building_sequences, fragments, robot_inventory, data 
+    tasks = mission
+    data = pdata
+    building_sequences = {}
+    fragments = []
+    prev = {
+        "task_id": "SYSTEM_START",
+        "type": "concrete",
+        "roles": "STARTER",
+        "sequence": "NIL",
+        "variables": {}
+    }
+    generate_fragments(tasks, [prev.copy()],-1)
+    plans_multi3 = fragments + sequence2fragments(building_sequences)
+    return plans_multi3
 
 if __name__ == "__main__":
     file_name = "simple_rooms"

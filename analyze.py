@@ -33,7 +33,8 @@ def compute_idle_times(lines, markers, mission_times, robot_count):
                 continue
             for sec in sections[1:-1]:
                 ws = sec.split()
-                idle_evolution[ws[0]].append((ws[2] == "idle", float(l.split()[2][1:-1])))
+                is_idle = (ws[2] == "idle") or (len(ws) == 4 and ws[3].find("wait_until") > -1)
+                idle_evolution[ws[0]].append((is_idle, float(l.split()[2][1:-1])))
     
     for i in range(robot_count):
         robot_name = f"robot_{i+1}"

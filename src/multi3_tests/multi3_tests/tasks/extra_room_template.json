@@ -6,7 +6,7 @@
     "variables": {},
     "subtasks": [
         {
-            "task_id": "vacuum^$ROOM_NUMBER$",
+            "task_id": "vacuum^$ROOM$",
             "type": "concrete",
             "sequence": "NIL",
             "variables": {
@@ -17,7 +17,7 @@
             }
         },
         {
-            "task_id": "mop^$ROOM_NUMBER$",
+            "task_id": "mop^$ROOM$",
             "type": "concrete",
             "sequence": "NIL",
             "variables": {
@@ -28,7 +28,7 @@
             }
         },
         {
-            "task_id": "polish^$ROOM_NUMBER$",
+            "task_id": "polish^$ROOM$",
             "type": "concrete",
             "sequence": "NIL",
             "variables": {

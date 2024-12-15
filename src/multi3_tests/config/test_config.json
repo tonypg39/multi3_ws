@@ -3,5 +3,6 @@
     "mission_sizes": [2,10,15,20],
     "sampling_size": 3,
     "room_limits": [-2.5,2.5],
-    "effort_limits": [1,15]
+    "effort_limits": [1,15],
+    "extra_mission_effort": 5.0
 }
