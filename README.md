@@ -11,6 +11,11 @@ The repo contains the software for the Adaptive Multi-Robot Coordination platfor
 * Execute `ros2 run multi3_tests generate` to generate all the test specifications.
 * Run the tests automatically with `python3 run_tests.py` (This script will look for the test files generated with the previous command, that are stored in `src/multi3_tests/multi3_tests/tests`)
 
+## Data Analysis
+The script *analyze.py* reads the log output of each run of the tests and computes metrics such as completion time and average idle time.
+The script in *data_analysis.py* creates a Pandas Dataframe with all the tests' metrics.
+
+
 ### To run one particular test
 * Execute `ros2 launch multi3_tests test.launch.py test_id:=<test_name>`
 
