@@ -1,4 +1,4 @@
-
+# Multi-3 Adaptive Coordination of Robots
 
 The repo contains the software for the Adaptive Multi-Robot Coordination platform Multi-3. It is a ROS2 workspace that contains the following packages:
 * `multi3_coordinator`: The mission controller that orchestrates the execution of the mission and sends the mission fragments to the executor robots.
