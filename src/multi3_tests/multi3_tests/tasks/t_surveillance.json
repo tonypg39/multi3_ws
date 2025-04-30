@@ -1,0 +1,80 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "sequential",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "patrol_area",
+            "type": "multi-instance",
+            "variables": {
+                "loopType": "parallel",
+                "loopCount": "$MISSION_SIZE"
+            },
+            "subtasks": [
+                {
+                    "task_id": "scan_perimeter",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "thermal_scan",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "record_video",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                }
+            ]
+        },
+        {
+            "task_id": "analyze_surveillance_data",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {}
+        },
+        {
+            "task_id": "handle_anomalies",
+            "type": "abstract",
+            "method": "parallel",
+            "sequence": "NIL",
+            "variables": {},
+            "subtasks": [
+                {
+                    "task_id": "alert_security",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "track_intruder",
+                    "type": "multi-instance",
+                    "variables": {
+                        "loopType": "sequential",
+                        "loopCount": "$MISSION_SIZE"
+                    },
+                    "subtasks": [
+                        {
+                            "task_id": "follow_movement",
+                            "type": "concrete",
+                            "sequence": "NIL",
+                            "variables": {}
+                        },
+                        {
+                            "task_id": "capture_image",
+                            "type": "concrete",
+                            "sequence": "NIL",
+                            "variables": {}
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

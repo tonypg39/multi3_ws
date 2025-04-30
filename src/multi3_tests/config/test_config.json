@@ -1,8 +1,10 @@
 {
-    "robot_counts": [2,3,5,10],
-    "mission_sizes": [2,10,15,20],
+    "robot_counts": [2,5,10],
+    "mission_sizes": [2,10,20],
+    "bl_assignment_sample_size": 2,
     "sampling_size": 3,
-    "room_limits": [-2.5,2.5],
+    "area_limits": [-2.5,2.5],
     "effort_limits": [1,15],
+    "scenarios": ["t_agriculture","t_surveillance","t_cleaning"],
     "extra_mission_effort": 5.0
 }

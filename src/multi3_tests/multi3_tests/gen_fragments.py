@@ -5,22 +5,31 @@ building_sequences = {}
 bseq_bl = {}
 fragments = []
 data = None
-robot_inventory = {}
+# robot_inventory = {}
+active_bl_assignment = {}
+
+
+# def preassign_bl(ctask):
+#     # Iterate over the robots to see who can perform this skill
+#     candidates = []
+    # sep = ctask.find("^")
+    # if sep >-1:
+    #     ctask = ctask[:sep]
+#     for robot,skills in robot_inventory.items():
+#         if ctask in skills:
+#             candidates.append(robot)
+#     if len(candidates) > 0:
+#         # print(candidates, ctask)
+#         rnd_idx = np.random.choice(len(candidates))
+#         return candidates[rnd_idx]
+#     return None
 
 def preassign_bl(ctask):
-    # Iterate over the robots to see who can perform this skill
-    candidates = []
-    sep = ctask.find("^")
-    if sep >-1:
-        ctask = ctask[:sep]
-    for robot,skills in robot_inventory.items():
-        if ctask in skills:
-            candidates.append(robot)
-    if len(candidates) > 0:
-        # print(candidates, ctask)
-        rnd_idx = np.random.choice(len(candidates))
-        return candidates[rnd_idx]
-    return None
+    # sep = ctask.find("^")
+    # if sep >-1:
+    #     ctask = ctask[:sep]
+    # print(f"Active assignemnt: {active_bl_assignment} | ctask: {ctask}")
+    return active_bl_assignment[ctask]
 
 
 def flatten(A):
@@ -56,6 +65,7 @@ def create_send_task(id):
 
 
 def generate_fragments(t, prev, mi_idx):
+
     global data,building_sequences, fragments
     if t["type"] == "concrete":
         itask = {"id": t["task_id"], "vars": t["variables"].copy()}
@@ -89,17 +99,18 @@ def generate_fragments(t, prev, mi_idx):
         pt = prev
         if t["method"] == "sequential":
             for st in t["subtasks"]:
-                pt = generate_fragments(st, pt,-1)
+                pt = generate_fragments(st, pt,mi_idx)
             return [pt]
         elif t["method"] == "parallel":
             all_prevs = []
             for st in t["subtasks"]:
-                x = generate_fragments(st, pt,-1)
+                x = generate_fragments(st, pt,mi_idx)
                 all_prevs.append(x)
             return flatten(all_prevs)
     
     if t["type"] == "multi-instance":
         all_prevs = []
+        pt = prev.copy()
         for idx in range(t["variables"]["loopCount"]):
             if t["variables"]["loopType"] == "parallel":
                 pt = prev.copy()
@@ -170,24 +181,20 @@ def sequence2fragments(sequences, preassigned=False):
         frags.append(obj)
     return frags
 
-
-def generate_fragmented_plans(path, mission_size, pdata, inventory):
-    # Read always simple_rooms.json
-    global data, building_sequences, bseq_bl, fragments, robot_inventory
-    file_name = "simple_rooms"
-    with open(f"{path}/tasks/{file_name}.json","r") as f:
-        tasks = json.load(f)
-
-    # [For the FIXED case of Simple_rooms]
-    # Modify the loopCount on the task node according to mission size parameter
-    tasks["subtasks"][0]["variables"]["loopCount"] = mission_size
-    
-    # Initialize generation variables
-    data = pdata
-    robot_inventory = inventory
+def reset():
+    global data, building_sequences, bseq_bl, fragments
     building_sequences = {}
     bseq_bl = {}
     fragments = []
+    
+
+
+def generate_fragmented_plans(mission, pdata, bl_assignments):
+    # Read always simple_rooms.json
+    global data, building_sequences, bseq_bl, fragments, active_bl_assignment
+    tasks = mission
+    data = pdata
+    reset()
     prev = {
         "task_id": "SYSTEM_START",
         "type": "concrete",
@@ -200,13 +207,28 @@ def generate_fragmented_plans(path, mission_size, pdata, inventory):
     D_m3 = fragments + sequence2fragments(building_sequences)
 
     ## Baseline 
-    gen_seq_bl(tasks,prev.copy(),-1)
-    D_bl = sequence2fragments(bseq_bl,preassigned=True)
+    # gen_seq_bl(tasks,prev.copy(),-1)
+    # D_bl = sequence2fragments(bseq_bl,preassigned=True)
+    baseline_plans = []
+    # Return a list of baseline fragment plans (One for every assignment)
+    for assign in bl_assignments:
+        reset()
+        prev = {
+            "task_id": "SYSTEM_START",
+            "type": "concrete",
+            "roles": "STARTER",
+            "sequence": "NIL",
+            "variables": {}
+        }
+        active_bl_assignment = assign
+        gen_seq_bl(tasks,prev.copy(),-1)
+        D_bl = sequence2fragments(bseq_bl,preassigned=True)
+        baseline_plans.append(D_bl)
 
-    # Call both generators and create tasks_baseline.json and tasks_multi3.json and put them inside the test folder
+    # Call both generators and  create tasks_baseline.json and tasks_multi3.json and put them inside the test folder
     return {
         "multi3": D_m3,
-        "baseline": D_bl
+        "baseline": baseline_plans
     }
 
 

@@ -1,0 +1,1 @@
+{"robot_1": ["mop", "vacuum"], "robot_2": ["vacuum", "mop", "polish"], "robot_3": ["polish", "vacuum"], "robot_4": ["mop", "polish"], "robot_5": ["mop"], "robot_6": ["mop", "vacuum"], "robot_7": ["mop", "vacuum", "polish"], "robot_8": ["mop", "polish"], "robot_9": ["mop", "vacuum", "polish"], "robot_10": ["mop"]}

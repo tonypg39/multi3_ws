@@ -1,0 +1,96 @@
+[
+    {
+        "robot": "robot_2",
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^0",
+                "vars": {
+                    "location": {
+                        "x": -1.5626949286887881,
+                        "y": -0.4983071814533595
+                    }
+                }
+            },
+            {
+                "id": "send_signal|vacuum^0",
+                "vars": {}
+            },
+            {
+                "id": "wait_until|mop^0",
+                "vars": {}
+            },
+            {
+                "id": "polish^0",
+                "vars": {
+                    "location": {
+                        "x": -1.5626949286887881,
+                        "y": -0.4983071814533595
+                    }
+                }
+            },
+            {
+                "id": "send_signal|polish^0",
+                "vars": {}
+            },
+            {
+                "id": "wait_until|mop^1",
+                "vars": {}
+            },
+            {
+                "id": "polish^1",
+                "vars": {
+                    "location": {
+                        "x": -0.05756535002187313,
+                        "y": 1.7804826883108333
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "robot": "robot_1",
+        "initial_wait": "vacuum^0",
+        "tasks": [
+            {
+                "id": "mop^0",
+                "vars": {
+                    "location": {
+                        "x": -1.5626949286887881,
+                        "y": -0.4983071814533595
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^0",
+                "vars": {}
+            },
+            {
+                "id": "wait_until|polish^0",
+                "vars": {}
+            },
+            {
+                "id": "vacuum^1",
+                "vars": {
+                    "location": {
+                        "x": -0.05756535002187313,
+                        "y": 1.7804826883108333
+                    }
+                }
+            },
+            {
+                "id": "mop^1",
+                "vars": {
+                    "location": {
+                        "x": -0.05756535002187313,
+                        "y": 1.7804826883108333
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^1",
+                "vars": {}
+            }
+        ]
+    }
+]

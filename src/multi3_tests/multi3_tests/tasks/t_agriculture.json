@@ -1,0 +1,86 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "sequential",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "field_survey",
+            "type": "multi-instance",
+            "variables": {
+                "loopType": "parallel",
+                "loopCount": "$MISSION_SIZE"
+            },
+            "subtasks": [
+                {
+                    "task_id": "drone_scan",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "soil_moisture_analysis",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                }
+            ]
+        },
+        {
+            "task_id": "data_analysis",
+            "type": "concrete",
+            "sequence": "NIL",
+            "variables": {}
+        },
+        {
+            "task_id": "apply_treatment",
+            "type": "multi-instance",
+            "variables": {
+                "loopType": "parallel",
+                "loopCount": "$MISSION_SIZE"
+            },
+            "subtasks": [
+                {
+                    "task_id": "fertilizer_application",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "pest_control_spray",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "irrigation_adjustment",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                }
+            ]
+        },
+        {
+            "task_id": "post_treatment_monitoring",
+            "type": "abstract",
+            "method": "parallel",
+            "sequence": "NIL",
+            "variables": {},
+            "subtasks": [
+                {
+                    "task_id": "drone_recheck",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                },
+                {
+                    "task_id": "soil_nutrient_test",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {}
+                }
+            ]
+        }
+    ]
+}

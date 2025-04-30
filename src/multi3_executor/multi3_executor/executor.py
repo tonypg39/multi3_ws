@@ -78,6 +78,7 @@ class FragmentExecutor(Node):
         state = "idle" if not self.busy else "busy " + self.info_task
         m.data = self.robot_name + "=" + state
         self.hearbeat_pub.publish(m)
+        # self.get_logger().info(f"\n\n\nSending Heartbeat!! = Current Task: {self.info_task}")
 
     def _start_srv(self):
         # self.create_service()
@@ -117,9 +118,12 @@ class FragmentExecutor(Node):
                     virtual_effort = self.env_states[core_task][int(t["id"][mi_sep+1:])]
                 t["id"] = core_task
 
+            elif t["id"] in self.env_states:
+                virtual_effort = self.env_states[t["id"]]
             wait_for_skill = Event()
             self.get_logger().info(f"Starting the skill {t['id']}  with params {t['vars']} and v. effort {virtual_effort}")
-            sk = self.sk_map[t["id"]](self, t["vars"],wait_for_skill)
+            sk = self.sk_map[t["id"]](self, t["vars"],wait_for_skill,skill_name=self.info_task)
+
             self.virtual_state = sk.exec(self.virtual_state, virtual_effort)
             wait_for_skill.wait()
             failure |= sk.success

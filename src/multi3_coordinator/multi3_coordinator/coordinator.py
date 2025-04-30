@@ -16,11 +16,6 @@ class CoordinatorNode(Node):
             "signal_states_period": 1.0,
             "assignment_period": 1.5
         }
-        # FIXME: Move these dicts to a JSON, specially the second
-        # self.robot_inventory = {
-        #     "robot_1": ["vacuum","clean_mop"],
-        #     "robot_2": ["put_signal","mop"]
-        # }
         self.shutdown_count = -1
         self.idle_robots = {}
         self.robot_states = {}
@@ -53,11 +48,11 @@ class CoordinatorNode(Node):
         self.signal_pub_timer = self.create_timer(self.coord_settings['signal_states_period'],self.broadcast_signal_states)
         self.assignment_timer = self.create_timer(self.coord_settings['assignment_period'],self.assign)
         self.fragments = self.load_fragments(fragments)
+        # self.get_logger().info(f"The loaded fragments: {self.fragments}")
         # Dict to keep track of the states of executed fragments 
         # (For a frag to have a key here, the fragment must've been sent )
         self.fragments_futures = {} 
-        # self.assign()
-        # self.get_logger().info(len(self.fragments))
+        
         
 
     def read_fragments(self, test_id, mode):
@@ -152,20 +147,25 @@ class CoordinatorNode(Node):
                 continue
             if self.get_core_task(t["id"]) not in self.robot_inventory[robot]:
                 able = False
-        # self.get_logger().info(f"Checking elegibility for {robot} and tasks {fragment['tasks']} = {able}")
+        self.get_logger().info(f"Checking elegibility for {robot} and tasks {fragment['tasks']} = {able}")
         return able
     
     def get_core_task(self, task):
         sep = task.find("^")
         if sep > -1:
             return task[:sep]
+        return task
     
     def generate_assigments(self, robots, fragments):
         assignment_dict = {}
         sorted_frags = sorted(fragments, key= lambda x: x["age"], reverse=True)
         used_robots = set()
         for f in sorted_frags:
+            # self.get_logger().warning(f"Inside sorted frags {robots}")
+
             if "robot" in f.keys():
+                # STATIC ASSIGNMENT, we expect the keyword robot associated with each fragment
+                # The fragments are a construct with all of the tasks assigned to a specific robot
                 if f["robot"] in robots:
                     self.fragments[f["fragment_id"]]["status"] = "executed"
                     assignment_dict[f["robot"]] = f.copy()
@@ -271,16 +271,16 @@ class CoordinatorNode(Node):
         
 
 
-def read_fragments():
-    package_path = get_package_prefix("multi3_coordinator").replace("install","src")
-    # print(package_path)
-    with open(f"{package_path}/multi3_coordinator/tasks.json") as f:
-        frags = json.load(f)
-    return frags
+# def read_fragments():
+#     package_path = get_package_prefix("multi3_coordinator").replace("install","src")
+#     # print(package_path)
+#     with open(f"{package_path}/multi3_coordinator/tasks.json") as f:
+#         frags = json.load(f)
+#     return frags
 
 def main(args=None):
     rclpy.init(args=args)
-    fragments = read_fragments()
+    # fragments = read_fragments()
     coord = CoordinatorNode()
     rclpy.spin(coord)
     coord.destroy_node()

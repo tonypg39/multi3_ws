@@ -1,0 +1,40 @@
+{
+    "task_id": "root",
+    "type": "abstract",
+    "method": "sequential",
+    "sequence": "NIL",
+    "variables": {},
+    "subtasks": [
+        {
+            "task_id": "clean_room",
+            "type": "multi-instance",
+            "variables": {
+                "loopType": "parallel",
+                "loopCount": "$MISSION_SIZE"
+            },
+            "subtasks": [
+                {
+                    "task_id": "vacuum",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                    }
+                },
+                {
+                    "task_id": "mop",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                    }
+                },
+                {
+                    "task_id": "polish",
+                    "type": "concrete",
+                    "sequence": "NIL",
+                    "variables": {
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+{"robot_1": ["thermal_scan", "analyze_surveillance_data", "scan_perimeter", "capture_image", "record_video", "alert_security", "follow_movement"], "robot_2": ["record_video", "alert_security", "follow_movement", "capture_image"]}

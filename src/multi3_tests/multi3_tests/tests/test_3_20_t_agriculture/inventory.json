@@ -1,0 +1,1 @@
+{"robot_1": ["fertilizer_application", "drone_scan", "soil_moisture_analysis", "drone_recheck"], "robot_2": ["pest_control_spray", "drone_recheck", "data_analysis", "irrigation_adjustment"], "robot_3": ["soil_nutrient_test", "irrigation_adjustment", "drone_scan", "drone_recheck", "soil_moisture_analysis"]}
