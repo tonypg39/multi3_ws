@@ -16,7 +16,7 @@ def estimate_mov_time(pos_a, pos_b, velocity):
     return t
 
 
-class Navigator():
+class Nav2Navigator():
 
     def __init__(self, node, finish_event) -> None:
         self.node = node
@@ -58,6 +58,125 @@ class Navigator():
     
     def feedback_callback(self, feedback_msg):
         self.node.get_logger().info(f"Feedback: {feedback_msg.feedback}")
+
+
+class NativeNavigator():
+    
+    def __init__(self, node, finish_event) -> None:
+        self.node = node
+        self.finish_event = finish_event
+        self.cmd_pub = self.create_publisher(Twist, f'/{self.node.robot_name}/cmd_vel', 10)
+        
+        qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE,
+            depth=10
+        )
+        self.odom_sub = self.create_subscription(
+            Odometry,
+            f'/{self.node.robot_name}/odom',
+            self.odom_callback,
+            qos,
+            callback_group=self.callback_group
+        )
+
+        # Control parameters
+        self.control_params = {
+            "k_linear": 0.12,
+            "k_angular": 0.34,
+            "max_linear": 0.7,
+            "dist_threshold": 0.8,
+            "sample_period": 0.35
+        }
+
+        self.current_pose = None
+        self.goal_pose = None
+
+        self.timer = self.create_timer(self.control_params["sample_period"], self.control_loop, callback_group=self.callback_group)
+        self.get_logger().info("Navigator ready for goal commands")
+
+
+    def set_goal_pose(self, goal):
+        self.goal_pose = goal
+        self.get_logger().info(f"Executing go to <goal: {goal}>")
+        self.active_goal_handle = True
+
+
+
+    # Robot Handling functions
+    def odom_callback(self, msg):
+        self.current_pose = msg.pose.pose
+
+    def control_loop(self):
+        if self.goal_pose is None or self.current_pose is None or self.active_goal_handle is None:
+            return
+        
+        p_yaw = 0.0
+        #FIXME: Add the current state object reference here
+        x,y,yaw = self.get_current_state()
+
+        #Take a single control step
+        yaw = self.wrap_angle(p_yaw, yaw)
+        p_yaw = yaw
+
+        # Linear Velocity
+        k_linear = self.control_params['k_linear']
+        dx = self.goal_pose["x"] - self.current_pose.position.x
+        dy = self.goal_pose["y"] - self.current_pose.position.y
+        distance = hypot(dx, dy)
+        linear_speed = min(self.control_params['max_linear'], distance * k_linear)
+
+        # Angular Velocity
+        k_angular = self.control_params['k_angular']
+        desired_angle_goal = self.wrap_angle(p_ang, math.atan2(y_goal-y,x_goal-x))
+        p_ang = desired_angle_goal
+        # pos_msg = f"The current angle: {math.degrees(yaw)}  | Desired: {math.degrees(desired_angle_goal)} | Da: {math.degrees(desired_angle_goal-yaw)}"
+        # self.get_logger().info(pos_msg)
+        angular_speed = (desired_angle_goal-yaw)*k_angular
+
+        vel_msg = Twist()
+        vel_msg.linear.x = linear_speed
+        vel_msg.angular.z = angular_speed
+        
+        
+        self.get_logger().info(f"The distance to the goal is: {distance}")
+        if distance < self.control_params["dist_threshold"]:
+        self.cmd_pub.publish(vel_msg)
+        
+
+
+
+
+
+
+
+
+    # helper functions
+    def euler_from_quaternion(self, quaternion):
+        """
+        Converts quaternion (w in last place) to euler roll, pitch, yaw
+        quaternion = [x, y, z, w]
+        Below should be replaced when porting for ROS2 Python tf_conversions is done.
+        """
+        x = quaternion[0]
+        y = quaternion[1]
+        z = quaternion[2]
+        w = quaternion[3]
+
+        sinr_cosp = 2 * (w * x + y * z)
+        cosr_cosp = 1 - 2 * (x * x + y * y)
+        roll = np.arctan2(sinr_cosp, cosr_cosp)
+
+        sinp = 2 * (w * y - z * x)
+        pitch = np.arcsin(sinp)
+
+        siny_cosp = 2 * (w * z + x * y)
+        cosy_cosp = 1 - 2 * (y * y + z * z)
+        yaw = np.arctan2(siny_cosp, cosy_cosp)
+
+        return roll, pitch, yaw
+    
+
 
 # Skills
 class WaitSkill():
