@@ -1,0 +1,80 @@
+[
+    {
+        "robot": "robot_1",
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^0",
+                "vars": {
+                    "location": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            },
+            {
+                "id": "mop^0",
+                "vars": {
+                    "location": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^0",
+                "vars": {}
+            },
+            {
+                "id": "wait_until|polish^0",
+                "vars": {}
+            },
+            {
+                "id": "vacuum^1",
+                "vars": {
+                    "location": {
+                        "x": -1.5,
+                        "y": 1.5
+                    }
+                }
+            },
+            {
+                "id": "mop^1",
+                "vars": {
+                    "location": {
+                        "x": -1.5,
+                        "y": 1.5
+                    }
+                }
+            },
+            {
+                "id": "polish^1",
+                "vars": {
+                    "location": {
+                        "x": -1.5,
+                        "y": 1.5
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "robot": "robot_2",
+        "initial_wait": "mop^0",
+        "tasks": [
+            {
+                "id": "polish^0",
+                "vars": {
+                    "location": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            },
+            {
+                "id": "send_signal|polish^0",
+                "vars": {}
+            }
+        ]
+    }
+]

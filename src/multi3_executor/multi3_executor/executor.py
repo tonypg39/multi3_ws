@@ -18,16 +18,26 @@ class FragmentExecutor(Node):
         self.declare_parameter("name", "robot")
         self.declare_parameter("mode", "virtual")
         self.declare_parameter("test_id", "")
+        self.declare_parameter("tbot_mapping", "")
         self.declare_parameter("sample_id", "")
         self.callback_group = ReentrantCallbackGroup()
+
+        self.tbot_mapping = self.get_parameter("tbot_mapping").value
         self.skill_list = self.get_parameter("skill_list").value
         self.robot_name = self.get_parameter("name").value
         test_id = self.get_parameter("test_id").value
         sample_id = self.get_parameter("sample_id").value[1:]
         self.virtual_mode = self.get_parameter("mode").value == "virtual"
         self.env_states = None
-        self.get_logger().info(f"Starting an exec node [{self.robot_name}] with skills: " + self.skill_list)
+        self.get_logger().info(f"Starting an exec node [{self.robot_name}] ")
 
+        if self.tbot_mapping != "":
+            tbots = self.tbot_mapping.split(",")
+            bot_idx = self.robot_name.split("_")[1]
+            self.tbot_name = tbots[bot_idx - 1]
+        else:
+            self.tbot_name = None
+        
         #FIXME: Add to json
         self.settings = {
             "heartbeat_period": 3.0

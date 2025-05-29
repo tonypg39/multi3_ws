@@ -203,6 +203,7 @@ class CoordinatorNode(Node):
     def send_assignment(self, robot, fragment):
         req = Fragment.Request()
         req.fragment = json.dumps(fragment)
+        
         cli = self.create_client(Fragment, f'/{robot}/get_fragment')
         while not cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')

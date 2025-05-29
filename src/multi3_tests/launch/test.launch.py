@@ -11,6 +11,7 @@ launch_args = [
 
 def launch_setup(context):
     test_id_value = LaunchConfiguration('test_id').perform(context) # Here you'll get the runtime config value
+    tbot_mapping = LaunchConfiguration('tbot_mapping').perform(context) # Here you'll get the runtime config value
     # mode = LaunchConfiguration('config').perform(context)
     coordinator_node = Node(
         package='multi3_coordinator',
@@ -29,7 +30,8 @@ def launch_setup(context):
             parameters=[
                 {'name': f'robot_{i}'},
                 {'test_id': LaunchConfiguration("test_id")},
-                {'sample_id': LaunchConfiguration("sample_id")}  # Pass the test_id parameter to each node
+                {'sample_id': LaunchConfiguration("sample_id")},
+                {'tbot_id': LaunchConfiguration("tbot_mapping")}  # Pass the test_id parameter to each node
             ],
         )
         for i in range(1,n_execs+1)  # Convert to int at runtime

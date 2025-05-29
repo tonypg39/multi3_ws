@@ -1,0 +1,110 @@
+[
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^0",
+                "vars": {
+                    "location": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            },
+            {
+                "id": "send_signal|vacuum^0",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "vacuum^0",
+        "tasks": [
+            {
+                "id": "mop^0",
+                "vars": {
+                    "location": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^0",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "mop^0",
+        "tasks": [
+            {
+                "id": "polish^0",
+                "vars": {
+                    "location": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            },
+            {
+                "id": "send_signal|polish^0",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "SYSTEM_START",
+        "tasks": [
+            {
+                "id": "vacuum^1",
+                "vars": {
+                    "location": {
+                        "x": -1.5,
+                        "y": 1.5
+                    }
+                }
+            },
+            {
+                "id": "send_signal|vacuum^1",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "vacuum^1",
+        "tasks": [
+            {
+                "id": "mop^1",
+                "vars": {
+                    "location": {
+                        "x": -1.5,
+                        "y": 1.5
+                    }
+                }
+            },
+            {
+                "id": "send_signal|mop^1",
+                "vars": {}
+            }
+        ]
+    },
+    {
+        "initial_wait": "mop^1",
+        "tasks": [
+            {
+                "id": "polish^1",
+                "vars": {
+                    "location": {
+                        "x": -1.5,
+                        "y": 1.5
+                    }
+                }
+            },
+            {
+                "id": "send_signal|polish^1",
+                "vars": {}
+            }
+        ]
+    }
+]
