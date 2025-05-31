@@ -2,13 +2,17 @@ import rclpy
 from rclpy.node import Node
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.qos import QoSProfile, HistoryPolicy
 from std_msgs.msg import String
 from .skills import SkillManager
+from geometry_msgs.msg import Pose
 from threading import Event
 import json
 import time
+from tf_transformations import quaternion_from_euler
 from ament_index_python import get_package_prefix
 from multi3_interfaces.srv import Fragment
+from irobot_create_msgs.srv import ResetPose
 
 class FragmentExecutor(Node):
     def __init__(self) -> None:
@@ -23,20 +27,24 @@ class FragmentExecutor(Node):
         self.callback_group = ReentrantCallbackGroup()
 
         self.tbot_mapping = self.get_parameter("tbot_mapping").value
+        self.get_logger().info(f"The value of TbotMapping is: {self.tbot_mapping}")
         self.skill_list = self.get_parameter("skill_list").value
         self.robot_name = self.get_parameter("name").value
         test_id = self.get_parameter("test_id").value
         sample_id = self.get_parameter("sample_id").value[1:]
         self.virtual_mode = self.get_parameter("mode").value == "virtual"
+        self.initial_position = None
         self.env_states = None
         self.get_logger().info(f"Starting an exec node [{self.robot_name}] ")
 
         if self.tbot_mapping != "":
-            tbots = self.tbot_mapping.split(",")
+            tbots = self.tbot_mapping[3:].split(",")
             bot_idx = self.robot_name.split("_")[1]
-            self.tbot_name = tbots[bot_idx - 1]
+            tbot_name = tbots[int(bot_idx) - 1]
+            # FIXME: SE-Fix generalize the namespacing to any application
+            self.real_robot_namespace = f"Turtlebot_024{tbot_name}"
         else:
-            self.tbot_name = None
+            self.real_robot_namespace = None
         
         #FIXME: Add to json
         self.settings = {
@@ -55,19 +63,83 @@ class FragmentExecutor(Node):
             self.env_states = self.read_env_states(test_id, int(sample_id))
         else:
             self.virtual_state = None
-        
+            self.initial_position = self.read_initial_position(test_id)
+            self.start_reset_srv()
+            self.reset_odometry(self.initial_position)
 
-        sk_mg = SkillManager(skill_mask=self.skill_list)
+
+        sk_mg = SkillManager(skill_mask=self.skill_list, virtual_mode=self.virtual_mode)
         self.sk_map = sk_mg.skill_map()
         # print(self.sk_map)
         # Create the service 
         self._start_srv()
+
+        # Reset initial position service
+
+        # Create service client for reset_pose
         
         # Create General communication channels 
         self.hearbeat_pub = self.create_publisher(String, "/hb_broadcast", 10)
         self.signal_subscription = self.create_subscription(String, '/signal_states', self.check_signals, 10)
         self.signal_pub_timer = self.create_timer(self.settings['heartbeat_period'],self._send_heartbeat)
         self.busy = False
+    
+    def read_initial_position(self, test_id):
+        package_path = get_package_prefix("multi3_tests").replace("install","src")
+        # print(package_path)
+        with open(f"{package_path}/multi3_tests/tests/{test_id}/initial_positions.json") as f:
+            positions = json.load(f)
+        initial_pos = positions[self.robot_name]
+        return initial_pos
+
+    def start_reset_srv(self):
+        qos_profile = QoSProfile(
+            depth=10,  # increase depth to allow larger history buffer
+            history=HistoryPolicy.KEEP_LAST
+        )
+        service_name = f'/{self.real_robot_namespace}/reset_pose'
+        self.reset_pose_client = self.create_client(ResetPose, service_name, qos_profile=qos_profile)
+
+        #Debugging service discovery
+        # self.list_services()
+
+        services = self.get_service_names_and_types()
+        self.get_logger().info(f'Waiting for service {service_name}...')
+        # while not self.reset_pose_client.wait_for_service(timeout_sec=1.0):
+        #     self.get_logger().info(f'Service {service_name} not available, waiting...')
+    
+    def list_services(self):
+        services = self.get_service_names_and_types()
+        self.get_logger().info('--- Available services ---')
+        for (srv_name, srv_types) in services:
+            self.get_logger().info(f'Service: {srv_name}, Types: {srv_types}')
+
+    def reset_odometry(self, initial_position):
+        request = ResetPose.Request()
+        quat = quaternion_from_euler(0.0, 0.0, initial_position["yaw"])
+        initial_pose = Pose()
+        initial_pose.position.x = initial_position["x"]
+        initial_pose.position.y = initial_position["y"]
+        initial_pose.position.z = 0.0
+        initial_pose.orientation.x = quat[0]
+        initial_pose.orientation.y = quat[1]
+        initial_pose.orientation.z = quat[2]
+        initial_pose.orientation.w = quat[3]
+        request.pose = initial_pose
+
+        self.get_logger().info(f'Calling {self.real_robot_namespace}/reset_pose with initial pose...')
+
+        future = self.reset_pose_client.call_async(request)
+
+        # Spin until the future is done
+        time.sleep(2)
+
+        # try:
+        #     response = future.result()
+        #     self.get_logger().info('Odometry reset successfully!')
+        # except Exception as e:
+        #     self.get_logger().error(f'ResetPose service call failed: {e}')
+        
 
     def check_signals(self, msg):
         self.flags = json.loads(msg.data)

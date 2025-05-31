@@ -69,23 +69,25 @@ class NativeNavigator():
     def __init__(self, node, finish_event, finish_mock_skill) -> None:
         self.node = node
         self.finish_event = finish_event
-        self.finish_mock_skill
-        if self.node.tbot_name is None:
+        self.finish_mock_skill = finish_mock_skill
+        
+        if self.node.real_robot_namespace is None:
             self.node.get_logger().fatal("The turtlebot name is NOT assigned for the executor node")
             raise ValueError("The turtlebot name is NOT assigned for the executor node")
-        self.cmd_pub = self.create_publisher(Twist, f'/{self.node.tbot_name}/cmd_vel', 10)
+        
+        self.cmd_pub = self.node.create_publisher(Twist, f'/{self.node.real_robot_namespace}/cmd_vel', 10)
         
         qos = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
             durability=DurabilityPolicy.VOLATILE,
             depth=10
         )
-        self.odom_sub = self.create_subscription(
+        self.odom_sub = self.node.create_subscription(
             Odometry,
-            f'/{self.node.tbot_name}/odom',
+            f'/{self.node.real_robot_namespace}/odom',
             self.odom_callback,
             qos,
-            callback_group=self.callback_group
+            callback_group=self.node.callback_group
         )
 
         # Control parameters
@@ -93,7 +95,7 @@ class NativeNavigator():
             "k_linear": 0.12,
             "k_angular": 0.34,
             "max_linear": 0.7,
-            "dist_threshold": 0.8,
+            "dist_threshold": 0.4,
             "sample_period": 0.35
         }
 
@@ -102,19 +104,20 @@ class NativeNavigator():
         self.spin_goal = None
         self.spin_timesteps = 0
 
-        self.timer = self.create_timer(self.control_params["sample_period"], self.control_loop, callback_group=self.callback_group)
-        self.get_logger().info("Navigator ready for goal commands")
+        self.timer = self.node.create_timer(self.control_params["sample_period"], self.control_loop, callback_group=self.node.callback_group)
+        self.node.get_logger().info("Navigator ready for goal commands")
 
 
     def set_goal_pose(self, goal):
+        # Initialize the cumulative variables
+        self.p_ang = 0.0
+        self.p_yaw = 0.0
         self.goal_pose = goal
-        self.get_logger().info(f"Executing go to <goal: {goal}>")
+        self.node.get_logger().info(f"Executing go to <goal: {goal}>")
     
     def set_spin_goal(self, spin_goal):
         self.spin_goal = spin_goal # sg = {"spin_speed": 1.5, "time_steps"}
 
-
-    # Robot Handling functions
     def odom_callback(self, msg):
         self.current_pose = msg.pose.pose
     
@@ -123,29 +126,42 @@ class NativeNavigator():
         cosy = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
         return math.atan2(siny, cosy)
 
+    def wrap_angle(self, previous_angle, new_angle):
+        """
+        Adjust the new_angle based on the previous_angle to maintain continuity.
+        Assumes angles are in radians.
+        """
+        angle_difference = new_angle - previous_angle
+        if angle_difference > math.pi:
+            new_angle -= 2 * math.pi
+        elif angle_difference < -math.pi:
+            new_angle += 2 * math.pi
+        return new_angle
+
     def control_loop(self):
         if self.spin_goal is not None:
             vel_msg = Twist()
-            vel_msg.angular.z = self.spin_goal["spin_speed"]
+            vel_msg.angular.z = self.spin_goal["angular_speed"]
             if self.spin_timesteps < self.spin_goal["time_steps"]:
+                self.node.get_logger().info(f"Task related spinning. Progress = {(self.spin_timesteps/self.spin_goal['time_steps'])*100}%")
                 self.cmd_pub.publish(vel_msg)
                 self.spin_timesteps += 1
+                
             else:
-                self.finish_mop_skill.set()
+                self.finish_mock_skill.set()
                 self.spin_goal = None
                 self.spin_timesteps = 0
 
         if self.goal_pose is None or self.current_pose is None:
             return
         
-        p_yaw = 0.0
         
         yaw = self.get_yaw_from_quaternion(self.current_pose.orientation)
         x,y = self.current_pose.position.x,self.current_pose.position.y
 
         #Take a single control step
-        yaw = self.wrap_angle(p_yaw, yaw)
-        p_yaw = yaw
+        yaw = self.wrap_angle(self.p_yaw, yaw)
+        self.p_yaw = yaw
 
         # Linear Velocity
         k_linear = self.control_params['k_linear']
@@ -156,10 +172,10 @@ class NativeNavigator():
 
         # Angular Velocity
         k_angular = self.control_params['k_angular']
-        desired_angle_goal = self.wrap_angle(p_ang, math.atan2(self.goal_pose["y"]-y,self.goal_pose["x"]-x))
-        p_ang = desired_angle_goal
-        # pos_msg = f"The current angle: {math.degrees(yaw)}  | Desired: {math.degrees(desired_angle_goal)} | Da: {math.degrees(desired_angle_goal-yaw)}"
-        # self.get_logger().info(pos_msg)
+        desired_angle_goal = self.wrap_angle(self.p_ang, math.atan2(self.goal_pose["y"]-y,self.goal_pose["x"]-x))
+        self.p_ang = desired_angle_goal
+        pos_msg = f"The current angle: {math.degrees(yaw)}  | Desired: {math.degrees(desired_angle_goal)} | Da: {math.degrees(desired_angle_goal-yaw)}"
+        self.node.get_logger().info(pos_msg)
         angular_speed = (desired_angle_goal-yaw)*k_angular
 
         vel_msg = Twist()
@@ -167,7 +183,7 @@ class NativeNavigator():
         vel_msg.angular.z = angular_speed
         
         
-        self.get_logger().info(f"The distance to the goal is: {distance}")
+        self.node.get_logger().info(f"The distance to the goal is: {distance}")
         if distance > self.control_params["dist_threshold"]:
             # continue to move the robot
             self.cmd_pub.publish(vel_msg)
@@ -269,7 +285,7 @@ class MopSkill():
         self.nav = NativeNavigator(self.node, self.wait_for_nav, self.wait_for_mock_skill)
         self.node.get_logger().info(f"Starting up skill: {self.__class__.__name__}")
     
-    def exec(self,virtual_state=None):
+    def exec(self,virtual_state=None,virtual_effort=None):
         # It needs: params["room"]["size"]
         print("Received the params: ")
         # goal_pos = [self.params["location"]["x"],self.params["location"]["y"],0.0]
@@ -280,7 +296,7 @@ class MopSkill():
         }
         spin_goal = {
             "angular_speed": 0.3,
-            "timesteps": 250
+            "time_steps": 250
         }
         self.nav.set_goal_pose(goal_pos)
         self.wait_for_nav.wait()
@@ -307,7 +323,7 @@ class VacuumSkill():
         self.nav = NativeNavigator(self.node, self.wait_for_nav, self.wait_for_mock_skill)
         self.node.get_logger().info("Starting up skill: Vacuum")
     
-    def exec(self,virtual_state=None):
+    def exec(self,virtual_state=None,virtual_effort=None):
         # It needs: params["room"]["size"]
         print("Received the params: ")
         # goal_pos = [self.params["location"]["x"],self.params["location"]["y"],0.0]
@@ -318,7 +334,7 @@ class VacuumSkill():
         }
         spin_goal = {
             "angular_speed": 0.8,
-            "timesteps": 100
+            "time_steps": 100
         }
         self.nav.set_goal_pose(goal_pos)
         self.wait_for_nav.wait()
@@ -344,7 +360,7 @@ class PolishSkill():
         self.nav = NativeNavigator(self.node, self.wait_for_nav, self.wait_for_mock_skill)
         self.node.get_logger().info("Starting up skill: Polish")
     
-    def exec(self,virtual_state=None):
+    def exec(self,virtual_state=None,virtual_effort=None):
         # It needs: params["room"]["size"]
         print("Received the params: ")
         # goal_pos = [self.params["location"]["x"],self.params["location"]["y"],0.0]
@@ -355,7 +371,7 @@ class PolishSkill():
         }
         spin_goal = {
             "angular_speed": -0.5,
-            "timesteps": 200
+            "time_steps": 200
         }
         self.nav.set_goal_pose(goal_pos)
         self.wait_for_nav.wait()
@@ -481,16 +497,16 @@ class VirtualSKill():
 # Skill Manager
 # SE-FIX: Move the instantiation of the classes here, to avoid the need to rebring up the navigators
 class SkillManager():
-    def __init__(self, skill_mask) -> None:
+    def __init__(self, skill_mask, virtual_mode=True) -> None:
         """
         skill_mask: if specified, then only those skills are created inside the SKmanager
         """
         self.sk_map = {
             "wait_until": WaitSkill,
             "send_signal": SendSkill,
-            "mop": VMopSkill,
-            "vacuum": VVacuumSkill,
-            "polish": VPolishSkill,
+            "mop": VMopSkill if virtual_mode else MopSkill,
+            "vacuum": VVacuumSkill if virtual_mode else VacuumSkill,
+            "polish": VPolishSkill if virtual_mode else PolishSkill
         }
         general_skills = ["scan_perimeter", "thermal_scan","record_video", "analyze_surveillance_data", "alert_security","follow_movement","capture_image","drone_scan","soil_moisture_analysis","data_analysis","apply_treatment","fertilizer_application","pest_control_spray","irrigation_adjustment","drone_recheck","soil_nutrient_test"]
         for skill in general_skills:
@@ -511,3 +527,4 @@ class SkillManager():
 
     def skill_map(self):
         return self.sk_map
+

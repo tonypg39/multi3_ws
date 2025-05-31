@@ -6,7 +6,9 @@ from launch_ros.actions import Node
 launch_args = [
     DeclareLaunchArgument(name='test_id', default_value='test_2_2', description='description'),
     DeclareLaunchArgument('mode',default_value='multi3'),
-    DeclareLaunchArgument('sample_id',default_value='s0')
+    DeclareLaunchArgument('sample_id',default_value='s0'),
+    DeclareLaunchArgument('tbot_mapping',default_value=''),
+    DeclareLaunchArgument('running_mode',default_value='virtual')
 ]
 
 def launch_setup(context):
@@ -29,9 +31,10 @@ def launch_setup(context):
             output='screen',
             parameters=[
                 {'name': f'robot_{i}'},
+                {'mode': LaunchConfiguration("running_mode")},
                 {'test_id': LaunchConfiguration("test_id")},
                 {'sample_id': LaunchConfiguration("sample_id")},
-                {'tbot_id': LaunchConfiguration("tbot_mapping")}  # Pass the test_id parameter to each node
+                {'tbot_mapping': LaunchConfiguration("tbot_mapping")}  # Pass the test_id parameter to each node
             ],
         )
         for i in range(1,n_execs+1)  # Convert to int at runtime
